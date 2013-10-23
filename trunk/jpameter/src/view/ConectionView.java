@@ -29,7 +29,7 @@ public class ConectionView {
 	private JPasswordField jpassSenha;
 	private JButton jbConfirmar;
 	private JComboBox cbBD;
-	private JButton jbAvançar;
+	private JButton jbAvancar;
 	
 	public ConectionView(){
 		createComponents();
@@ -55,11 +55,11 @@ public class ConectionView {
 		cbBD.setBounds(40, 240, 300, 30);
 		cbBD.setEnabled(false);
 		
-		jbAvançar = new JButton("Avançar");
-		jbAvançar.setBounds(285, 320, 100, 30);
+		jbAvancar = new JButton("Avan�ar");
+		jbAvancar.setBounds(285, 320, 100, 30);
 		
 		PromptSupport.setPrompt("URL do Banco de Dados", jtextUrl);
-		PromptSupport.setPrompt("Usuário", jtextUser);
+		PromptSupport.setPrompt("Usu�rio", jtextUser);
 		PromptSupport.setPrompt("Senha", jpassSenha);
 		
 		PromptSupport.setForeground(Color.BLACK, jtextUrl);
@@ -89,10 +89,10 @@ public class ConectionView {
 		paneConection.add(jpassSenha);
 		paneConection.add(jbConfirmar);
 		paneConection.add(cbBD);
-		paneConection.add(jbAvançar);
+		paneConection.add(jbAvancar);
 		
 		//Configuracoes do Jframe
-		windowConection = new JFrame("JPA Meter - Configurações Iniciais");
+		windowConection = new JFrame("JPA Meter - Configura��es Iniciais");
 		windowConection.setSize(400, 400);
 		windowConection.add(paneConection);
 		windowConection.setLayout(null);
