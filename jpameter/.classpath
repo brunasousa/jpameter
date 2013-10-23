@@ -5,5 +5,6 @@
 	<classpathentry kind="lib" path="src/libs/towel-v1.2.2.jar"/>
 	<classpathentry kind="lib" path="src/libs/xswingx.jar"/>
 	<classpathentry kind="lib" path="src/libs/mysql-connector-java-5.1.26-bin.jar"/>
+	<classpathentry kind="lib" path="src/libs/jdom-2.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
