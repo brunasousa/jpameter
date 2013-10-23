@@ -1,4 +1,4 @@
-package jpaentity;
+package jpaentity.dbmsdriver;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,7 +14,7 @@ import java.util.List;
  * 
  *         Class that implements a driver for MySQL Database System
  */
-public class MySQLDatabaseSystemDriverImpl implements DatabaseSystemDriver {
+public class DatabaseSystemDriverMySQLImpl implements DatabaseSystemDriver {
 
 	private Connection connection;
 	private String host;
@@ -23,7 +23,7 @@ public class MySQLDatabaseSystemDriverImpl implements DatabaseSystemDriver {
 	private String password;
 	private boolean connected = false;
 
-	public MySQLDatabaseSystemDriverImpl(String host, int port, String user,
+	public DatabaseSystemDriverMySQLImpl(String host, int port, String user,
 			String password) throws SQLException {
 		DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 		this.host = host;
@@ -135,7 +135,7 @@ public class MySQLDatabaseSystemDriverImpl implements DatabaseSystemDriver {
 
 	public static void main(String[] args) {
 		try {
-			DatabaseSystemDriver systemDriver = new MySQLDatabaseSystemDriverImpl(
+			DatabaseSystemDriver systemDriver = new DatabaseSystemDriverMySQLImpl(
 					"192.168.1.100", 3306, "root", "ufc123");
 			systemDriver.openConnection();
 			List<String> databases = systemDriver.getDatabases();
