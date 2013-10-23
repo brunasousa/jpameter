@@ -127,6 +127,23 @@ public class DatabaseSystemDriverMySQLImpl implements DatabaseSystemDriver {
 				result = TableColumnType.TYPE_VARCHAR;
 				break;
 			}
+			if (type.equalsIgnoreCase("char")) {
+				result = TableColumnType.TYPE_CHAR;
+				break;
+			}
+			if (type.equalsIgnoreCase("decimal")) {
+				result = TableColumnType.TYPE_DECIMAL;
+				break;
+			}
+			if (type.equalsIgnoreCase("float")) {
+				result = TableColumnType.TYPE_FLOAT;
+				break;
+			}
+			if (type.equalsIgnoreCase("timestamp")) {
+				result = TableColumnType.TYPE_TIMESTAMP;
+				break;
+			}
+			throw new SQLException();
 		}
 		resultSet.close();
 		statement.close();
@@ -136,17 +153,22 @@ public class DatabaseSystemDriverMySQLImpl implements DatabaseSystemDriver {
 	public static void main(String[] args) {
 		try {
 			DatabaseSystemDriver systemDriver = new DatabaseSystemDriverMySQLImpl(
-					"192.168.1.100", 3306, "root", "ufc123");
+					"192.168.0.100", 3306, "root", "ufc123");
 			systemDriver.openConnection();
 			List<String> databases = systemDriver.getDatabases();
 			for (String db : databases) {
-				System.out.println(db);
-				List<String> tables = systemDriver.getTables(db);
-				for (String tb : tables) {
-					System.out.println("\t" + tb);
-					List<String> columns = systemDriver.getColumns(db, tb);
-					for (String co : columns) {
-						System.out.println("\t\t" + systemDriver.getColumnDataType(db, tb, co) + "\t"  + co);
+				if (db.equalsIgnoreCase("tpcc")) {
+					System.out.println(db);
+					List<String> tables = systemDriver.getTables(db);
+					for (String tb : tables) {
+						System.out.println("\t" + tb);
+						List<String> columns = systemDriver.getColumns(db, tb);
+						for (String co : columns) {
+							System.out.println("\t\t"
+									+ systemDriver
+											.getColumnDataType(db, tb, co)
+									+ "\t" + co);
+						}
 					}
 				}
 			}
