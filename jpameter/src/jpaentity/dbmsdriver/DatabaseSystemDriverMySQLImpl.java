@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import jpaentity.entity.Column;
+import jpaentity.entity.Table;
+
 /**
  * 
  * @author Leonardo Oliveira Moreira
@@ -147,6 +150,26 @@ public class DatabaseSystemDriverMySQLImpl implements DatabaseSystemDriver {
 		}
 		resultSet.close();
 		statement.close();
+		return result;
+	}
+	
+	@Override
+	public List<Table> getEntityTables(String database) throws SQLException {
+		List<Table> result = new ArrayList<Table>();	
+		List<String> tableList = getTables(database);
+		for (String t : tableList) {
+			Table table = new Table();
+			table.setName(t);
+			List<String> columnList = getColumns(database, table.getName());
+			for (String c : columnList) {
+				int columnType = getColumnDataType(database, t, c);
+				Column column = new Column();
+				column.setName(c);
+				column.setType(columnType);
+				table.addColumn(column);
+			}
+			result.add(table);
+		}
 		return result;
 	}
 

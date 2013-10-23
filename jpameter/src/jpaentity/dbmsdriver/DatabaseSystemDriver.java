@@ -3,6 +3,8 @@ package jpaentity.dbmsdriver;
 import java.sql.SQLException;
 import java.util.List;
 
+import jpaentity.entity.Table;
+
 /**
  * 
  * @author Leonardo Oliveira Moreira
@@ -63,4 +65,13 @@ public interface DatabaseSystemDriver {
 	 */
 	public int getColumnDataType(String database, String table, String column)
 			throws SQLException;
+
+	/**
+	 * Retrieve a tables' list of database
+	 * 
+	 * @param database
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Table> getEntityTables(String database) throws SQLException;
 }
