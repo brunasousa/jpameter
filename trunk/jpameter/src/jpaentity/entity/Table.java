@@ -34,4 +34,17 @@ public class Table {
 		columns.add(column);
 	}
 	
+	public String toJavaClassString() {
+		String string = "";
+		string += "public class " + name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase() + " {\n";
+		for (Column column : columns) {
+			string += column.toJavaAttributeColumnString();
+		}
+		for (Column column : columns) {
+			string += column.toJavaGetterAndSetterAttributeColumnString();
+		}
+		string += "}";
+		return string;
+	}
+	
 }
