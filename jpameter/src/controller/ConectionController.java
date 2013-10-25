@@ -16,7 +16,7 @@ public class ConectionController {
             	Class.forName("com.mysql.jdbc.Driver");
                 con=DriverManager.getConnection("jdbc:mysql://"+url,user,pwd);
             }catch (Exception e) {
-               System.out.println("Erro na conex√£o." + e);
+               System.out.println("Erro na conex„o " + e);
            }
         }
         return con;
