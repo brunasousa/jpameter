@@ -54,11 +54,11 @@ public class Column {
 		String string = "";
 		switch (type) {
 			case TableColumnType.TYPE_TIMESTAMP : {
-				string += "@Temporal(TemporalType.TIMESTAMP)\n";
+				string += "    @Temporal(TemporalType.TIMESTAMP)\n";
 				break;
 			}
 		}
-		string += "@Column(name=\"" + name + "\")\n";
+		string += "    @Column(name=\"" + name + "\")\n";
 		string += "    private ";
 		switch (type) {
 			case TableColumnType.TYPE_CHAR: {
