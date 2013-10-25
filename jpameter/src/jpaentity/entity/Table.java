@@ -36,6 +36,8 @@ public class Table {
 	
 	public String toJavaClassString() {
 		String string = "";
+		string += "@Entity\n";
+		string += "@Table(name=\"" + name + "\")\n";
 		string += "public class " + name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase() + " {\n";
 		for (Column column : columns) {
 			string += column.toJavaAttributeColumnString();
