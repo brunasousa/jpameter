@@ -27,7 +27,7 @@ import jpa.JPAConstants;
 import jpa.dbmsdriver.DatabaseSystemDriver;
 import jpa.entity.Table;
 import jpa.strategy.JPAStrategy;
-import jpa.strategy.JPAStrategyHibernate;
+import jpa.strategy.JPAStrategyMySQLHibernate;
 
 /**
  * 
@@ -85,21 +85,21 @@ public class GeneratedCodeGUI extends JFrame {
 		for (Table table : entityList) {
 			switch (jpaStrategy) {
 				case JPAConstants.JPA_HIBERNATE: {
-					jpaCodeStrategy = new JPAStrategyHibernate();
+					jpaCodeStrategy = new JPAStrategyMySQLHibernate();
 					break;
 				}
 				case JPAConstants.JPA_ECLIPSELINK: {
-					jpaCodeStrategy = new JPAStrategyHibernate();
+					jpaCodeStrategy = new JPAStrategyMySQLHibernate();
 					break;
 				}
 				case JPAConstants.JPA_OPENJPA: {
-					jpaCodeStrategy = new JPAStrategyHibernate();
+					jpaCodeStrategy = new JPAStrategyMySQLHibernate();
 					break;
 				}
 			}
 			JPanel panel = new JPanel(new BorderLayout());
 			JTextPane textPane = new JTextPane();
-			textPane.setText(jpaCodeStrategy.getEntityJavaClass(table));
+			textPane.setText(jpaCodeStrategy.getEntityJavaClass(table, database));
 			textPane.setEditable(false);
 			panel.add(new JScrollPane(textPane));
 			jtpEntities.addTab(table.getName().substring(0, 1).toUpperCase()
