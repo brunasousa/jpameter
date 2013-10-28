@@ -1,9 +1,9 @@
-package jpaentity.dbmsdriver;
+package jpa.dbmsdriver;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import jpaentity.entity.Table;
+import jpa.entity.Table;
 
 /**
  * 

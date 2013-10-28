@@ -1,4 +1,4 @@
-package jpaentity.dbmsdriver;
+package jpa.dbmsdriver;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,8 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import jpaentity.entity.Column;
-import jpaentity.entity.Table;
+import jpa.entity.Column;
+import jpa.entity.Table;
 
 /**
  * 
