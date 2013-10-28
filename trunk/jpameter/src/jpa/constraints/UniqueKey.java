@@ -1,4 +1,4 @@
-package jpaentity.constraints;
+package jpa.constraints;
 
 /**
  * 

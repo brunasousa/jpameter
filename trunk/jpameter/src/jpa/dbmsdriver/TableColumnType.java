@@ -1,4 +1,4 @@
-package jpaentity.dbmsdriver;
+package jpa.dbmsdriver;
 
 /**
  * 
