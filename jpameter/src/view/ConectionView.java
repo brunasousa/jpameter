@@ -55,11 +55,11 @@ public class ConectionView {
 		cbBD.setBounds(40, 240, 300, 30);
 		cbBD.setEnabled(false);
 		
-		jbAvancar = new JButton("Avançar");
+		jbAvancar = new JButton("AvanÃ§ar");
 		jbAvancar.setBounds(285, 320, 100, 30);
 		
 		PromptSupport.setPrompt("URL do Banco de Dados", jtextUrl);
-		PromptSupport.setPrompt("Usuário", jtextUser);
+		PromptSupport.setPrompt("UsuÃ¡rio", jtextUser);
 		PromptSupport.setPrompt("Senha", jpassSenha);
 		
 		PromptSupport.setForeground(Color.BLACK, jtextUrl);
@@ -92,7 +92,7 @@ public class ConectionView {
 		paneConection.add(jbAvancar);
 		
 		//Configuracoes do Jframe
-		windowConection = new JFrame("JPA Meter - Configurações Iniciais");
+		windowConection = new JFrame("JPA Meter - Configuraï¿½ï¿½es Iniciais");
 		windowConection.setSize(400, 400);
 		windowConection.add(paneConection);
 		windowConection.setLayout(null);
