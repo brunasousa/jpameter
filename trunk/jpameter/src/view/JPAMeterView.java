@@ -43,7 +43,7 @@ public class JPAMeterView {
 	private void createComponents() {
 
 		//Lado esquerdo ======================================================
-		jlTecnlogia = new JLabel("Tecnologias de Persistência");
+		jlTecnlogia = new JLabel("Tecnologias de Persistencia");
 		jlTecnlogia.setBounds(10, 20, 300, 30);
 
 		jrbHibernate = new JRadioButton("Hibernate");
@@ -66,13 +66,13 @@ public class JPAMeterView {
 		jpbPersistence.setBounds(10, 50, 300, 75);
 		jpbPersistence.setBackground(Color.WHITE);
 		
-		jlConexoes = new JLabel("Conexões Simuladas");
+		jlConexoes = new JLabel("Conexoes Simuladas");
 		jlConexoes.setBounds(10, 150, 300, 10);
 		
-		jlOperacoes = new JLabel("Operações");
+		jlOperacoes = new JLabel("Operacoes");
 		jlOperacoes.setBounds(10, 220, 300, 10);
 
-		String itens[] = { "Selecione a operação", "Op 1", "Op2 2" };
+		String itens[] = { "Selecione a operacao", "Op 1", "Op2 2" };
 		cbBD = new JComboBox(itens);
 		cbBD.setBounds(10, 245, 200, 20);
 		
@@ -96,7 +96,7 @@ public class JPAMeterView {
 		
 		
 		//Lado direito ======================================================
-		jlOperacao = new JLabel("<html><h3>Operaçõeo: </h3></html>");
+		jlOperacao = new JLabel("<html><h3>Operacao: </h3></html>");
 		jlOperacao.setBounds(260, 5, 300, 20);
 		
 		jp250R = new JPanel();
