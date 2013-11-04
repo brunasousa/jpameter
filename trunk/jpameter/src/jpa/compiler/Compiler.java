@@ -29,12 +29,16 @@ import javax.tools.ToolProvider;
 
 public class Compiler {
 	String separator = System.getProperty("file.separator");
-
+	
 	public void generateJar() throws IOException{
-		File temp  = new File(CompilerConstants.FOLDER_TEMP);
-		FileOutputStream fout = new FileOutputStream(System.getProperty("user.dir")
-													+separator+"src"
-													+separator+"jpameter.jar");
+		File temp  = new File(CompilerConstants.DEFAULT_FOLDER);
+		FileOutputStream fout = new FileOutputStream(System.getProperty("user.home")
+													 +separator
+													 +"jpameter.jar");
+		
+		File oldManifest = new File(CompilerConstants.DEFAULT_FOLDER+separator+"META-INF"+separator+"MANIFEST.MF");
+		if(oldManifest.exists())
+			oldManifest.delete();
 		
 		//Manifest Informations 
 		StringBuffer sb = new StringBuffer();
@@ -48,26 +52,20 @@ public class Compiler {
 		JarOutputStream out = new JarOutputStream(fout, mf);
 		addFilesToJar(out, temp);
 		
-		if(temp.exists())
-			temp.delete();
-		
 		out.close();
 		fout.close();
-		System.out.println("jpameter.jar gerado em "+System.getProperty("user.dir")+separator+"src/");
+		System.out.println("jpameter.jar gerado em "+System.getProperty("user.home"));
 	}
 	
 	public boolean addFilesToJar(JarOutputStream out, File archive) throws IOException{	
-		byte b[] = new byte[1024];
 		if(archive.isDirectory()){
-			for(File f: archive.listFiles()){
+			File[] files = archive.listFiles();
+			for(File f: files){
 				addFilesToJar(out, f);
 			}
 		}else{
-			JarEntry addFiles = new JarEntry(archive.getAbsolutePath().replace(System.getProperty("user.dir")
-											+separator
-											+CompilerConstants.FOLDER_TEMP
-											+separator, ""));
-			
+			byte b[] = new byte[1024];
+			JarEntry addFiles = new JarEntry(archive.getAbsolutePath().replace(CompilerConstants.DEFAULT_FOLDER, ""));
 			addFiles.setTime(archive.lastModified());
 			out.putNextEntry(addFiles);
 			BufferedInputStream bi = new BufferedInputStream(new FileInputStream(archive));
@@ -78,16 +76,12 @@ public class Compiler {
 				out.write(b, 0, len);
 			}
 			bi.close();
-			return true;
 		}
-		return false;
+		return true;
 	}
 	
 	public void compileClasses() throws IOException, URISyntaxException{
-		File temp  = new File(CompilerConstants.FOLDER_TEMP);
-		
-		if(!temp.exists())
-			temp.mkdir();
+		createFolderDefault();
 		
 		File dir = new File(System.getProperty("user.dir")
 							+separator
@@ -104,13 +98,12 @@ public class Compiler {
 	     
 	     //Add dependency --- dont work
 	     List<String> options = new ArrayList<String>();
-	     options.add("-cp");
-	     options.add(System.getProperty("user.dir")+"/src/libs/mysql-connector-java-5.1.26-bin.jar;");
+	     options.addAll(Arrays.asList("-classpath",System.getProperty("user.dir")+"/src/libs/mysql-connector-java-5.1.26-bin.jar"));
 	     
 	     JavaCompiler javaCompiler =  ToolProvider.getSystemJavaCompiler();
 	     DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 	     StandardJavaFileManager fileManager = javaCompiler.getStandardFileManager(diagnostics, Locale.getDefault(), Charset.forName("UTF-8"));
-	     fileManager.setLocation(StandardLocation.CLASS_OUTPUT,Arrays.asList(new File(CompilerConstants.FOLDER_TEMP)));
+	     fileManager.setLocation(StandardLocation.CLASS_OUTPUT,Arrays.asList(new File(CompilerConstants.DEFAULT_FOLDER)));
 	     Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(Arrays.asList(javaFiles));
 	     javaCompiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits).call();
 	        
@@ -121,19 +114,66 @@ public class Compiler {
 	    fileManager.close();
 	}
 	
-	public void addDependencies(){
+	public boolean addDependencies(String strategyFolder) throws IOException, InterruptedException{
+		File folder = new File(System.getProperty("user.dir")
+								+separator
+								+"src"
+								+separator
+								+strategyFolder);
 		
+		if(!folder.exists()&&!folder.isDirectory())
+			return false;
+		
+		String[] jars = folder.list();
+		if(jars.length==0)
+			return false;
+		
+		createFolderDefault(); 
+		
+		for(String jar: jars){
+			System.out.println("\n======================================");
+			System.out.println("Jar: "+jar);
+			System.out.println("Comand: \n");
+			System.out.println("jar -xf "
+										+System.getProperty("user.dir")
+										+separator
+										+"src"
+										+separator
+										+strategyFolder+separator+jar);
+			
+			Process p = Runtime.getRuntime().exec("jar -xf "
+										+System.getProperty("user.dir")
+										+separator
+										+"src"
+										+separator
+										+strategyFolder+separator+jar,
+										null,
+										new File(CompilerConstants.DEFAULT_FOLDER));
+			p.waitFor();
+		}
+		
+		return true;
+	}
+	
+	public void createFolderDefault(){
+		File f = new File(CompilerConstants.DEFAULT_FOLDER);
+		if(!f.exists())
+			f.mkdir();
 	}
 	
 	public static void main(String args[]){
 		try {
 			Compiler c = new Compiler();
+			c.addDependencies(CompilerConstants.ECLIPSELINK);
 			c.compileClasses();
 			c.generateJar();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
