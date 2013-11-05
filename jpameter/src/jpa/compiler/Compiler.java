@@ -131,25 +131,27 @@ public class Compiler {
 		createFolderDefault(); 
 		
 		for(String jar: jars){
-			System.out.println("\n======================================");
-			System.out.println("Jar: "+jar);
-			System.out.println("Comand: \n");
-			System.out.println("jar -xf "
-										+System.getProperty("user.dir")
-										+separator
-										+"src"
-										+separator
-										+strategyFolder+separator+jar);
-			
-			Process p = Runtime.getRuntime().exec("jar -xf "
-										+System.getProperty("user.dir")
-										+separator
-										+"src"
-										+separator
-										+strategyFolder+separator+jar,
-										null,
-										new File(CompilerConstants.DEFAULT_FOLDER));
-			p.waitFor();
+			if(jar.endsWith(".jar")){
+				System.out.println("\n======================================");
+				System.out.println("Jar: "+jar);
+				System.out.println("Comand: \n");
+				System.out.println("jar -xf "
+											+System.getProperty("user.dir")
+											+separator
+											+"src"
+											+separator
+											+strategyFolder+separator+jar);
+				
+				Process p = Runtime.getRuntime().exec("jar -xf "
+											+System.getProperty("user.dir")
+											+separator
+											+"src"
+											+separator
+											+strategyFolder+separator+jar,
+											null,
+											new File(CompilerConstants.DEFAULT_FOLDER));
+				p.waitFor();
+			}
 		}
 		
 		return true;
