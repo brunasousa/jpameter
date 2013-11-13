@@ -24,6 +24,7 @@ import javax.swing.JTextPane;
 import javax.swing.WindowConstants;
 
 import jpa.JPAConstants;
+import jpa.compiler.Compiler;
 import jpa.dbmsdriver.DatabaseSystemDriver;
 import jpa.entity.Table;
 import jpa.strategy.JPAStrategy;
@@ -43,8 +44,8 @@ public class GeneratedCodeGUI extends JFrame {
 	}
 
 	private JTabbedPane jtpEntities;
-	private List<Table> entityList;
-	private List<JTextPane> entityContent;
+	static List<Table> entityList;
+	static List<JTextPane> entityContent;
 
 	private JButton jbCreate;
 	private JButton jbExit;
@@ -156,6 +157,16 @@ public class GeneratedCodeGUI extends JFrame {
 		jbCreate.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Compiler c = new Compiler();
+				for(int i=0;i<entityContent.size();i++){
+					if(!c.saveClass(entityContent.get(i).getText())){
+						JOptionPane.showMessageDialog(getRef(), "Erro ao gerar arquivos de classe!",
+								"Error Message", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+				}
+				JOptionPane.showMessageDialog(getRef(), "Classes geradas com sucesso!",
+						"JPAMeter", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		jbExit.addActionListener(new ActionListener() {
