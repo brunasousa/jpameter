@@ -10,7 +10,7 @@ public class Constraint {
 	
 	private String name;
 	private String column;
-
+	
 	public String getName() {
 		return name;
 	}

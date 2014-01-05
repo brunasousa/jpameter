@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import jpa.constraints.Constraint;
+import jpa.constraints.PrimaryKey;
 import jpa.entity.Column;
 import jpa.entity.Table;
 
@@ -161,16 +163,43 @@ public class DatabaseSystemDriverMySQLImpl implements DatabaseSystemDriver {
 			Table table = new Table();
 			table.setName(t);
 			List<String> columnList = getColumns(database, table.getName());
+			List<Constraint> constraintsList = getConstraintsTable(database, table.getName()); 
 			for (String c : columnList) {
 				int columnType = getColumnDataType(database, t, c);
 				Column column = new Column();
 				column.setName(c);
 				column.setType(columnType);
+				if(constraintsList.size()<2) //Verifica se a tabela contem mais de uma chave primaria
+					for(Constraint cnst: constraintsList)//Adição das constraints nas colunas --Dêmora Bruna
+						if(column.getName().equals(cnst.getName()))
+							column.addConstraint(cnst);
+
 				table.addColumn(column);
 			}
 			result.add(table);
 		}
 		return result;
+	}
+	
+	@Override
+	public List<Constraint> getConstraintsTable(String database, String table) throws SQLException{
+		List<Constraint> constraints = new ArrayList<Constraint>();
+		
+		String sql = "select COLUMN_NAME, CONSTRAINT_NAME from KEY_COLUMN_USAGE where TABLE_SCHEMA = '"
+				+ database + "' and table_name = '" + table + "'";
+		
+		Statement statement = connection.createStatement();
+		ResultSet resultSet = statement.executeQuery(sql);
+		while (resultSet != null && resultSet.next()) {
+			String name = resultSet.getString(1);
+			String column = resultSet.getString(2);
+
+			if(column.toLowerCase().equals("primary")){
+				constraints.add(new PrimaryKey(name, column));
+			}
+		}
+		
+		return constraints;
 	}
 
 	public static void main(String[] args) {
@@ -201,4 +230,6 @@ public class DatabaseSystemDriverMySQLImpl implements DatabaseSystemDriver {
 			e.printStackTrace();
 		}
 	}
+	
+	
 }

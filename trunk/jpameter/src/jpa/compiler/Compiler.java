@@ -6,30 +6,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.sql.SQLException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
-import javax.crypto.spec.OAEPParameterSpec;
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.StandardLocation;
-import javax.tools.ToolProvider;
+import jpa.JPAConstants;
+import jpa.dbmsdriver.DatabaseSystemDriver;
+import jpa.dbmsdriver.DatabaseSystemDriverMySQLImpl;
 
 public class Compiler {
+
 	public Compiler(){
 		createFolder(CompilerConstants.DEFAULT_FOLDER);
 	}
@@ -37,6 +27,7 @@ public class Compiler {
 	String separator = System.getProperty("file.separator");
 	
 	public void generateJar() throws IOException{
+		removeSignedFiles();
 		File temp  = new File(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR);
 		FileOutputStream fout = new FileOutputStream(System.getProperty("user.home")
 													 +separator
@@ -49,8 +40,8 @@ public class Compiler {
 		//Manifest Informations 
 		StringBuffer sb = new StringBuffer();
 		sb.append("Manifest-Version: 1.0\n");
+		sb.append("Class-Path: .\n");
 		sb.append("Main-Class: "+CompilerConstants.MAIN_CLASS+"\n");
-		sb.append("Java-Bean: True\n");
 		
 		InputStream is = new ByteArrayInputStream(sb.toString().getBytes("UTF-8"));
 		Manifest mf = new Manifest(is);
@@ -71,7 +62,7 @@ public class Compiler {
 			}
 		}else{
 			byte b[] = new byte[1024];
-			JarEntry addFiles = new JarEntry(archive.getAbsolutePath().replace(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR, ""));
+			JarEntry addFiles = new JarEntry(archive.getAbsolutePath().replace(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR+separator, ""));
 			addFiles.setTime(archive.lastModified());
 			out.putNextEntry(addFiles);
 			BufferedInputStream bi = new BufferedInputStream(new FileInputStream(archive));
@@ -91,11 +82,12 @@ public class Compiler {
 		String nameFile = contentClass.substring(inicioClass,contentClass.indexOf(" ", inicioClass))+".java";
 		
 		String path = 	CompilerConstants.DEFAULT_FOLDER
-						+CompilerConstants.FILES_JAR
-						+separator
-						+CompilerConstants.URL_ORIGIN_FILES; 
-		
+						+CompilerConstants.FILES_JAR;
 		createFolder(path);
+		
+		path+= separator+CompilerConstants.URL_ORIGIN_FILES;
+		createFolder(path);
+		
 		File f = new File(path+separator+nameFile);
 		PrintStream ps = null;
 		
@@ -162,24 +154,34 @@ public class Compiler {
 	}
 	
 	public void compileClasses() throws IOException, InterruptedException{
-		File folder = new File(	CompilerConstants.DEFAULT_FOLDER
-								+CompilerConstants.FILES_JAR
-								+separator
-								+CompilerConstants.URL_ORIGIN_FILES);
 		
-		String pathPersistence =System.getProperty("user.dir")
+		String sourceFiles = CompilerConstants.DEFAULT_FOLDER
+							 +CompilerConstants.FILES_JAR
+							 +separator
+							 +CompilerConstants.URL_ORIGIN_FILES;
+		
+		File folder = new File(sourceFiles);
+		
+		String pathDependencies =System.getProperty("user.dir")
 								+separator
 								+"src"
 								+separator
 								+"libs"+separator+"eclipselink"+separator+"javax.persistence_2.1.0.v201304241213.jar";
 		
+		String pathFinal = 	CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR;
+		
+		String filesToCompiler = "";
+		
 		File[] files = folder.listFiles();
 		for(File f: files){
-			Process p = Runtime.getRuntime().exec("javac -cp "+pathPersistence+" "+f.getAbsolutePath(),
-					null,
-					new File(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR));
-			p.waitFor();
+			filesToCompiler+= f.getAbsolutePath()+" ";
 		}
+		
+		System.out.println("javac -d "+pathFinal+" -cp "+sourceFiles+System.getProperty("path.separator")+pathDependencies+" "+filesToCompiler);
+		Process p = Runtime.getRuntime().exec("javac -d "+pathFinal+" -cp "+sourceFiles+System.getProperty("path.separator")+pathDependencies+" "+filesToCompiler,
+				null,
+				new File(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR));
+		p.waitFor();
 		
 	}
 	public void createFolder(String folder){
@@ -188,12 +190,34 @@ public class Compiler {
 			f.mkdir();
 	}
 	
+	private void removeSignedFiles(){
+		String path = CompilerConstants.DEFAULT_FOLDER
+					  +CompilerConstants.FILES_JAR
+					  +separator
+					  +"META-INF"
+					  +separator;
+		File f = new File(path);
+		if(f.exists()){
+			File[] files = f.listFiles();
+			for(File file: files){
+				if(!file.isDirectory()){
+					String name = file.getName().toUpperCase();
+					String ext = name.substring(name.lastIndexOf("."), name.length()); 
+					if(ext.equals(".SF")||ext.equals(".DSA")||ext.equals(".RSA")||ext.equals(".EC"))
+						file.delete();
+				}
+			}
+		}
+	}
+	
 	public static void main(String args[]){
 		try {
 			Compiler c = new Compiler();
-			c.addDependencies(CompilerConstants.ECLIPSELINK);
-			c.addDependencies(CompilerConstants.COMMONS);
-			c.compileClasses();
+//			c.addDependencies(CompilerConstants.HIBERNATE);
+//			c.addDependencies(CompilerConstants.COMMONS);
+			FilesApplication fa = new FilesApplication();
+			fa.generatePersistenseFile(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR+"/META-INF/", JPAConstants.JPA_HIBERNATE);
+//			c.compileClasses();
 			c.generateJar();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -201,9 +225,9 @@ public class Compiler {
 //		} catch (URISyntaxException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
 		}
 	}
 }
