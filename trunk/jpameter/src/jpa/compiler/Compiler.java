@@ -174,13 +174,13 @@ public class Compiler {
 		
 		File[] files = folder.listFiles();
 		for(File f: files){
-			filesToCompiler+= f.getAbsolutePath()+" ";
+			filesToCompiler+= f.getName()+" ";
 		}
 		
 		System.out.println("javac -d "+pathFinal+" -cp "+sourceFiles+System.getProperty("path.separator")+pathDependencies+" "+filesToCompiler);
 		Process p = Runtime.getRuntime().exec("javac -d "+pathFinal+" -cp "+sourceFiles+System.getProperty("path.separator")+pathDependencies+" "+filesToCompiler,
 				null,
-				new File(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR));
+				new File(sourceFiles));
 		p.waitFor();
 		
 	}
