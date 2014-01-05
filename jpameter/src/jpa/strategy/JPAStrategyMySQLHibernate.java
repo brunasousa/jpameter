@@ -1,5 +1,6 @@
 package jpa.strategy;
 
+import jpa.constraints.Constraint;
 import jpa.dbmsdriver.TableColumnType;
 import jpa.entity.Column;
 import jpa.entity.Table;
@@ -14,9 +15,6 @@ public class JPAStrategyMySQLHibernate implements JPAStrategy {
 	@Override
 	public String getEntityJavaClass(Table table, String database) {
 		String string = "";
-		// add package
-		string += "package entities;\n";
-		string += "\n";
 		string += "import java.io.Serializable;\n";
 		string += "import java.math.BigDecimal;\n";
 		string += "import java.util.Date;\n";
@@ -29,6 +27,7 @@ public class JPAStrategyMySQLHibernate implements JPAStrategy {
 		string += "import javax.persistence.Table;\n";
 		string += "import javax.persistence.Temporal;\n";
 		string += "import javax.persistence.TemporalType;\n";
+		string += "import javax.persistence.Id;\n";
 		string += "import javax.xml.bind.annotation.XmlRootElement;\n";
 		string += "\n";
 		// add class definition
@@ -40,12 +39,17 @@ public class JPAStrategyMySQLHibernate implements JPAStrategy {
 		// add attributes
 		string += "    private static final long serialVersionUID = 1L;\n";
 		string += "\n";
+		
 		for (Column column : table.getColumns()) {
 			switch (column.getType()) {
 			case TableColumnType.TYPE_TIMESTAMP: {
 				string += "    @Temporal(TemporalType.TIMESTAMP)\n";
 				break;
 			}
+			}
+			for(Constraint c: column.getConstraints()){
+				if(c.getColumn().toLowerCase().equals("primary"))
+					string +="    @Id\n";
 			}
 			string += "    @Column(name=\"" + column.getName() + "\")\n";
 			string += "    private ";

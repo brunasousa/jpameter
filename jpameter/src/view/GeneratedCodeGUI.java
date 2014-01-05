@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,8 @@ import javax.swing.WindowConstants;
 
 import jpa.JPAConstants;
 import jpa.compiler.Compiler;
+import jpa.compiler.CompilerConstants;
+import jpa.compiler.FilesApplication;
 import jpa.dbmsdriver.DatabaseSystemDriver;
 import jpa.entity.Table;
 import jpa.strategy.JPAStrategy;
@@ -165,6 +168,27 @@ public class GeneratedCodeGUI extends JFrame {
 						return;
 					}
 				}
+				//Adicionado para testar criação do jar 
+				try {
+					c.addDependencies(CompilerConstants.ECLIPSELINK);
+					c.addDependencies(CompilerConstants.COMMONS);
+					FilesApplication fa = new FilesApplication();
+					fa.generatePersistenseFile(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR
+												+System.getProperty("file.separator")
+												+"META-INF"
+												+System.getProperty("file.separator"), JPAConstants.JPA_ECLIPSELINK);
+					c.compileClasses();
+					c.generateJar();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} 
+					catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
 				JOptionPane.showMessageDialog(getRef(), "Classes geradas com sucesso!",
 						"JPAMeter", JOptionPane.INFORMATION_MESSAGE);
 			}

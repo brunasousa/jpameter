@@ -3,6 +3,7 @@ package jpa.dbmsdriver;
 import java.sql.SQLException;
 import java.util.List;
 
+import jpa.constraints.Constraint;
 import jpa.entity.Table;
 
 /**
@@ -74,4 +75,14 @@ public interface DatabaseSystemDriver {
 	 * @throws SQLException
 	 */
 	public List<Table> getEntityTables(String database) throws SQLException;
+	
+	/**
+	 * Retrieve a table's list of constraints
+	 * 
+	 * @param database
+	 * @param table
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<Constraint> getConstraintsTable(String database, String table) throws SQLException;
 }

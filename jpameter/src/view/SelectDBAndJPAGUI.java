@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import jpa.JPAConstants;
+import jpa.compiler.ConectionData;
 import jpa.dbmsdriver.DatabaseSystemDriver;
 
 /**
@@ -187,6 +188,7 @@ public class SelectDBAndJPAGUI extends JFrame {
 					GeneratedCodeGUI generatedCodeGUI = new GeneratedCodeGUI(
 							databaseSystemDriver, jcbJPA.getSelectedIndex(),
 							jcbDB.getSelectedItem().toString());
+					ConectionData.SCHEMA = jcbDB.getSelectedItem().toString();
 					generatedCodeGUI.execute();
 				} catch (SQLException ex) {
 					try {

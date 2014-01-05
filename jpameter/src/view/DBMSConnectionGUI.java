@@ -20,6 +20,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+import jpa.compiler.ConectionData;
 import jpa.dbmsdriver.DatabaseSystemDriver;
 import jpa.dbmsdriver.DatabaseSystemDriverMySQLImpl;
 
@@ -229,6 +230,10 @@ public class DBMSConnectionGUI extends JFrame {
 						getRef().dispose();
 						SelectDBAndJPAGUI selectDBAndJPAGUI = new SelectDBAndJPAGUI(databaseSystemDriver);
 						selectDBAndJPAGUI.execute();
+						ConectionData.HOST = jtfHost.getText();
+						ConectionData.PASS = new String(jtfPassword.getPassword());
+						ConectionData.PORT = jtfPort.getText();
+						ConectionData.USER = jtfUser.getText();
 						return;
 					}
 					JOptionPane.showMessageDialog(getRef(),
