@@ -49,5 +49,13 @@ public class Column {
 	public void addConstraint(Constraint constraint) {
 		constraints.add(constraint);
 	}
+	
+	public boolean isPK(){
+		for(Constraint c: this.getConstraints())
+			if(c.getColumn().toLowerCase().equals("primary"))
+				return true;
+		
+		return false;
+	}
 
 }

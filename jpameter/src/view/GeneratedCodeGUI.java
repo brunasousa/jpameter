@@ -49,7 +49,7 @@ public class GeneratedCodeGUI extends JFrame {
 	private JTabbedPane jtpEntities;
 	static List<Table> entityList;
 	static List<JTextPane> entityContent;
-
+	static List<String> pkClasses = new ArrayList<String>();
 	private JButton jbCreate;
 	private JButton jbExit;
 
@@ -109,7 +109,11 @@ public class GeneratedCodeGUI extends JFrame {
 			jtpEntities.addTab(table.getName().substring(0, 1).toUpperCase()
 					+ table.getName().substring(1).toLowerCase() + ".java",
 					panel);
+			
 			entityContent.add(textPane);
+			
+			if(table.isCompositePK())
+				pkClasses.add(jpaCodeStrategy.getEntityPKClass(table));
 		}
 
 		jpForm.add(jtpEntities, BorderLayout.CENTER);
@@ -163,6 +167,13 @@ public class GeneratedCodeGUI extends JFrame {
 				Compiler c = new Compiler();
 				for(int i=0;i<entityContent.size();i++){
 					if(!c.saveClass(entityContent.get(i).getText())){
+						JOptionPane.showMessageDialog(getRef(), "Erro ao gerar arquivos de classe!",
+								"Error Message", JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+				}
+				for(String s : pkClasses){
+					if(!c.saveClass(s)){
 						JOptionPane.showMessageDialog(getRef(), "Erro ao gerar arquivos de classe!",
 								"Error Message", JOptionPane.ERROR_MESSAGE);
 						return;
