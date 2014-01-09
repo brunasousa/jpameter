@@ -84,5 +84,5 @@ public interface DatabaseSystemDriver {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<Constraint> getConstraintsTable(String database, String table) throws SQLException;
+	public List<Constraint> getPrimaryConstraintsTable(String database, String table) throws SQLException;
 }

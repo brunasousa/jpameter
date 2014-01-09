@@ -13,7 +13,7 @@ public class Table {
 	
 	private String name;
 	private List<Column> columns;
-	
+	private boolean compositePK;
 	public Table() {
 		columns = new ArrayList<Column>();
 	}
@@ -32,6 +32,12 @@ public class Table {
 	}
 	public void addColumn(Column column) {
 		columns.add(column);
+	}
+	public boolean isCompositePK() {
+		return compositePK;
+	}
+	public void setCompositePK(boolean compositePK) {
+		this.compositePK = compositePK;
 	}
 	
 }
