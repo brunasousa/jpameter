@@ -96,7 +96,7 @@ public class JPAMeterView {
 		
 		
 		//Lado direito ======================================================
-		jlOperacao = new JLabel("<html><h3>Operacao: </h3></html>");
+		jlOperacao = new JLabel("<html><h3>Resultados: </h3></html>");
 		jlOperacao.setBounds(260, 5, 300, 20);
 		
 		jp250R = new JPanel();
@@ -105,9 +105,9 @@ public class JPAMeterView {
 		
 		jtAbas = new JTabbedPane();
 		jtAbas.setBounds(260, 30, 725, 330);
-		jtAbas.add(jp250R, "50/250 registros");
-		jtAbas.add(jp1000R, "500/1000 registros");
-		jtAbas.add(jpMedia, "Media");
+		jtAbas.add(jp250R, "Complexidade");
+		jtAbas.add(jp1000R, "Tempo Médio");
+		jtAbas.add(jpMedia, "Desempenho");
 		
 		// Configuracoes do Jframe ======================================================
 		windowConection = new JFrame("JPA Meter");
