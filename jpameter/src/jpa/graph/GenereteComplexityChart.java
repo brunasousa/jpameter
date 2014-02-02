@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -26,7 +27,7 @@ import jpa.compiler.CompilerConstants;
 
 public class GenereteComplexityChart {
 	private File[] files;
-	private List<String> linesCharts;
+	private JScrollPane legends[] = new JScrollPane[3];
 	private int nFiles = 0;
 	private int bar4File = 5;
 	private int regA = 0 ;//Maior número de registros afetados
@@ -41,17 +42,17 @@ public class GenereteComplexityChart {
 			bar4File = 3;	
 	}
 	
-	public ChartPanel[] genereteChartComplexity(){
-		ChartPanel[] jfc = new ChartPanel[3];
+	public Chart[] genereteChartComplexity(){
+		Chart[] charts = new Chart[3];
 		
-		jfc[0] = generateChartPanelComplexity("SELECT");
-		jfc[1] = generateChartPanelComplexity("INSERT");
-		jfc[2] = generateChartPanelComplexity("UPDATE");
-		return jfc;
+		charts[0] = generateChartPanelComplexity("SELECT");
+		charts[1] = generateChartPanelComplexity("INSERT");
+		charts[2] = generateChartPanelComplexity("UPDATE");
+		return charts;
 	}
 	
-	private ChartPanel generateChartPanelComplexity(String typeQuery){
-		linesCharts = new ArrayList<String>();
+	private Chart generateChartPanelComplexity(String typeQuery){
+		List<String> linesCharts = new ArrayList<String>();
 		JTable jt = new JTable(new DefaultTableModel(new Object[][]{},new String[]{"Arquivo, Numero, Query, Registros Afetados"}));
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		int numberFile = 1;
@@ -61,31 +62,27 @@ public class GenereteComplexityChart {
 				for(int i=1;i<=bar4File;i++){
 					if(lines[i-1]!=null){
 						String vals[] = lines[i-1].split("\\|");
-						linesCharts.add(lines[i-1]+"|"+f.getName());
-						if(nFiles>1)
-							dataset.setValue(Long.parseLong(vals[2]), String.valueOf(i), f.getName());
-						else
-							dataset.setValue(Long.parseLong(vals[2]), String.valueOf(i), vals[5]);
+						linesCharts.add(lines[i-1]+"|"+f.getName()+"|"+String.valueOf(i));
+						dataset.setValue(Long.parseLong(vals[2]), String.valueOf(i), f.getName());
 					}
 				}
 			}
 			numberFile++;
 		}
 		
-		String titleH = "Arquivos";
-		if(nFiles==1)
-			titleH = "Registros afetados";
-		
-		JFreeChart jfc = ChartFactory.createBarChart("Complexidade "+typeQuery,titleH, "Tempo(ms)", dataset, 
-				  											PlotOrientation.VERTICAL, false,true, true);
+		JFreeChart jfc = ChartFactory.createBarChart("Complexidade "+typeQuery,"Arquivos", "Tempo(ms)", dataset, 
+				  											PlotOrientation.VERTICAL, true,true, true);
 		jfc.setBackgroundPaint(Color.WHITE);
 		jfc.getTitle().setPaint(Color.BLACK); 
 		CategoryPlot p = jfc.getCategoryPlot(); 
 		p.setRangeGridlinePaint(Color.red); 
 		ChartPanel cp = new ChartPanel(jfc);
-		cp.setPreferredSize(new Dimension(800,200));
+		cp.setPreferredSize(new Dimension(550,200));
 		
-		return cp;
+		Chart c = new Chart();
+		c.setChart(cp);
+		c.setLegend(legendChart(400, 150, linesCharts));
+		return c;
 	}
 	
 	private String[] searchRowsFile(File f, String typeQuery){
@@ -129,8 +126,26 @@ public class GenereteComplexityChart {
         
         return rows;
 	}
-
-	public List getLinesLastChart(){
-		return linesCharts;
+	
+	private JScrollPane legendChart(int width, int height, List<String> rows){
+		JScrollPane jcp = new JScrollPane();
+		DefaultTableModel dtm = new DefaultTableModel(new Object[][]{}, new String[]{"Arquivo","Num","Registros","Consulta"});
+		JTable jt = new JTable();
+		jt.setModel(dtm);
+		
+		for(String s:rows){
+			String[] vals = s.split("\\|");
+			dtm.addRow(new String[]{vals[6],vals[7],vals[5],vals[4]});
+		} 
+		jt.getColumnModel().getColumn(0).setPreferredWidth(20);
+		jt.getColumnModel().getColumn(1).setPreferredWidth(5);
+		jt.getColumnModel().getColumn(2).setPreferredWidth(10);
+		//jt.setEnabled(false);
+	
+		jcp.setViewportView(jt);
+		jcp.setPreferredSize(new Dimension(width, height));
+		jcp.setBackground(Color.WHITE);
+		jcp.createHorizontalScrollBar();
+		return jcp;
 	}
 }

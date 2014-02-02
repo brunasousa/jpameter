@@ -2,22 +2,21 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.ScrollPane;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import jpa.graph.GenereteComplexityChart;
 import jpa.graph.GenereteMeanTimeChart;
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
 
 public class JPAMeterView extends JFrame{
 
@@ -46,9 +45,12 @@ public class JPAMeterView extends JFrame{
 		
 		// Aba complexidade		
 		jpComplexidade.setSize(1000, 700);
-		jpComplexidade.add(gc.genereteChartComplexity()[0]);
-		jpComplexidade.add(gc.genereteChartComplexity()[1]);
-		jpComplexidade.add(gc.genereteChartComplexity()[2]);
+		jpComplexidade.add(gc.genereteChartComplexity()[0].getChart());
+		jpComplexidade.add(gc.genereteChartComplexity()[0].getLegend());
+		jpComplexidade.add(gc.genereteChartComplexity()[1].getChart());
+		jpComplexidade.add(gc.genereteChartComplexity()[1].getLegend());
+		jpComplexidade.add(gc.genereteChartComplexity()[2].getChart());
+		jpComplexidade.add(gc.genereteChartComplexity()[2].getLegend());
 		
 		//Aba tempo médio
 		jpTempMedio.add(gm.genereteMeanTimeChart());
@@ -70,6 +72,27 @@ public class JPAMeterView extends JFrame{
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+	}
+	
+	private JScrollPane legendChart(int width, int height, List<String> rows){
+		JScrollPane jcp = new JScrollPane();
+		DefaultTableModel dtm = new DefaultTableModel(new Object[][]{}, new String[]{"Arquivo","Num","Registros","Consulta"});
+		JTable jt = new JTable();
+		jt.setModel(dtm);
+		
+		for(String s:rows){
+			String[] vals = s.split("\\|");
+			dtm.addRow(new String[]{vals[6],vals[7],vals[5],vals[2]});
+		} 
+		jt.getColumnModel().getColumn(0).setPreferredWidth(20);
+		jt.getColumnModel().getColumn(1).setPreferredWidth(5);
+		jt.getColumnModel().getColumn(2).setPreferredWidth(10);
+		
+	
+		jcp.setViewportView(jt);
+		jcp.setPreferredSize(new Dimension(width, height));
+		jcp.createHorizontalScrollBar();
+		return jcp;
 	}
 
 }
