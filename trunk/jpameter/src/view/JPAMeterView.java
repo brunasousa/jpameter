@@ -51,18 +51,20 @@ public class JPAMeterView extends JFrame{
 		jpComplexidade.add(gc.genereteChartComplexity()[1].getLegend());
 		jpComplexidade.add(gc.genereteChartComplexity()[2].getChart());
 		jpComplexidade.add(gc.genereteChartComplexity()[2].getLegend());
+		jpComplexidade.add(gc.genereteChartComplexity()[3].getChart());
+		jpComplexidade.add(gc.genereteChartComplexity()[3].getLegend());
 		
 		//Aba tempo médio
 		jpTempMedio.add(gm.genereteMeanTimeChart());
 		
 		jtAbas = new JTabbedPane();
-		jtAbas.setBounds(0, 30, 1000, 700);
+		jtAbas.setBounds(0, 30, 1000, 850);
 		jtAbas.add(jpComplexidade, "Complexidade");
 		jtAbas.add(jpTempMedio, "Tempo Médio");
 		jtAbas.add(jpDesempnho, "Desempenho");
 		
 		// Configuracoes do Jframe ======================================================
-		this.setSize(1000, 700);
+		this.setSize(1000, 850);
 		this.add(jtAbas);
 		this.add(jlOperacao);
 		this.setLayout(null);
