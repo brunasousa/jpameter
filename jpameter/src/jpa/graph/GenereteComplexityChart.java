@@ -27,7 +27,6 @@ import jpa.compiler.CompilerConstants;
 
 public class GenereteComplexityChart {
 	private File[] files;
-	private JScrollPane legends[] = new JScrollPane[3];
 	private int nFiles = 0;
 	private int bar4File = 5;
 	private int regA = 0 ;//Maior número de registros afetados
@@ -43,11 +42,12 @@ public class GenereteComplexityChart {
 	}
 	
 	public Chart[] genereteChartComplexity(){
-		Chart[] charts = new Chart[3];
+		Chart[] charts = new Chart[4];
 		
 		charts[0] = generateChartPanelComplexity("SELECT");
 		charts[1] = generateChartPanelComplexity("INSERT");
 		charts[2] = generateChartPanelComplexity("UPDATE");
+		charts[3] = generateChartPanelComplexity("DELETE");
 		return charts;
 	}
 	
@@ -59,25 +59,26 @@ public class GenereteComplexityChart {
 		for(File f : files){
 			if(f!=null){
 				String lines[] = searchRowsFile(f, typeQuery);
-				for(int i=1;i<=bar4File;i++){
-					if(lines[i-1]!=null){
-						String vals[] = lines[i-1].split("\\|");
-						linesCharts.add(lines[i-1]+"|"+f.getName()+"|"+String.valueOf(i));
-						dataset.setValue(Long.parseLong(vals[2]), String.valueOf(i), f.getName());
+				if(lines.length>0)
+					for(int i=1;i<=bar4File;i++){
+						if(lines[i-1]!=null){
+							String vals[] = lines[i-1].split("\\|");
+							linesCharts.add(lines[i-1]+"|"+f.getName()+"|"+String.valueOf(i));
+							dataset.setValue(Long.parseLong(vals[2]), String.valueOf(i), f.getName());
+						}
 					}
-				}
 			}
 			numberFile++;
 		}
 		
 		JFreeChart jfc = ChartFactory.createBarChart("Complexidade "+typeQuery,"Arquivos", "Tempo(ms)", dataset, 
-				  											PlotOrientation.VERTICAL, true,true, true);
+				  											PlotOrientation.VERTICAL, false,true, true);
 		jfc.setBackgroundPaint(Color.WHITE);
 		jfc.getTitle().setPaint(Color.BLACK); 
 		CategoryPlot p = jfc.getCategoryPlot(); 
 		p.setRangeGridlinePaint(Color.red); 
 		ChartPanel cp = new ChartPanel(jfc);
-		cp.setPreferredSize(new Dimension(550,200));
+		cp.setPreferredSize(new Dimension(550,190));
 		
 		Chart c = new Chart();
 		c.setChart(cp);

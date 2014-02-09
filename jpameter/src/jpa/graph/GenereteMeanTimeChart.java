@@ -31,6 +31,7 @@ public class GenereteMeanTimeChart {
 				dataset.setValue(calTime("SELECT",f), "SELECT", f.getName());
 				dataset.setValue(calTime("INSERT",f), "INSERT", f.getName());
 				dataset.setValue(calTime("UPDATE",f), "UPDATE", f.getName());
+				dataset.setValue(calTime("DELETE",f), "DELETE", f.getName());
 			}
 		}
 		
@@ -68,6 +69,9 @@ public class GenereteMeanTimeChart {
 				e.printStackTrace();
 			}
 		}
-		return totalTime/lines;
+		if(totalTime>0)
+			return totalTime/lines;
+		
+		return 0;
 	} 
 }
