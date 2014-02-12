@@ -112,8 +112,8 @@ public class GeneratedCodeGUI extends JFrame {
 			
 			entityContent.add(textPane);
 			
-			if(table.isCompositePK())
-				pkClasses.add(jpaCodeStrategy.getEntityPKClass(table));
+			if(table.isCompositePK()) //Veririca se a table tem chave primaria composta
+				pkClasses.add(jpaCodeStrategy.getEntityPKClass(table)); //gera o codigo necessario para o arquivo de chave primaria da tabela especificada
 		}
 
 		jpForm.add(jtpEntities, BorderLayout.CENTER);
@@ -164,15 +164,16 @@ public class GeneratedCodeGUI extends JFrame {
 		jbCreate.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				getRef().dispose();
 				Compiler c = new Compiler();
-				for(int i=0;i<entityContent.size();i++){
+				for(int i=0;i<entityContent.size();i++){//Salva as classes no diretorio especificado em CompilerConstants
 					if(!c.saveClass(entityContent.get(i).getText())){
 						JOptionPane.showMessageDialog(getRef(), "Erro ao gerar arquivos de classe!",
 								"Error Message", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
 				}
-				for(String s : pkClasses){
+				for(String s : pkClasses){//Salva todas os codigos gerados para serem arquivos de chaves compostas 
 					if(!c.saveClass(s)){
 						JOptionPane.showMessageDialog(getRef(), "Erro ao gerar arquivos de classe!",
 								"Error Message", JOptionPane.ERROR_MESSAGE);
@@ -180,28 +181,30 @@ public class GeneratedCodeGUI extends JFrame {
 					}
 				}
 				//Adicionado para testar criação do jar 
-				try {
-					c.addDependencies(CompilerConstants.ECLIPSELINK);
-					c.addDependencies(CompilerConstants.COMMONS);
-					FilesApplication fa = new FilesApplication();
-					fa.generatePersistenseFile(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR
-												+System.getProperty("file.separator")
-												+"META-INF"
-												+System.getProperty("file.separator"), JPAConstants.JPA_ECLIPSELINK);
-					c.compileClasses();
-					c.generateJar();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} 
-					catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+//				try {
+//					c.addDependencies(CompilerConstants.ECLIPSELINK);
+//					c.addDependencies(CompilerConstants.COMMONS);
+//					FilesApplication fa = new FilesApplication();
+//					fa.generatePersistenseFile(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR
+//												+System.getProperty("file.separator")
+//												+"META-INF"
+//												+System.getProperty("file.separator"), JPAConstants.JPA_ECLIPSELINK);
+//					c.compileClasses();
+//					c.generateJar();
+//				} catch (IOException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				} 
+//					catch (InterruptedException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
 				
 				
 				JOptionPane.showMessageDialog(getRef(), "Classes geradas com sucesso!",
 						"JPAMeter", JOptionPane.INFORMATION_MESSAGE);
+				ConfigurationExperimentGUI ce = new ConfigurationExperimentGUI(jpaStrategy);
+				ce.execute();
 			}
 		});
 		jbExit.addActionListener(new ActionListener() {
