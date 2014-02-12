@@ -32,6 +32,9 @@ import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import jpa.JPAConstants;
+import jpa.experiment.ExperimentFile;
+
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -45,10 +48,15 @@ import org.jdom2.input.SAXBuilder;
  */
 public class ConfigurationExperimentGUI extends JFrame implements PropertyChangeListener{
 
+	public ConfigurationExperimentGUI(int jpaStrategy){
+		
+	}
+	
 	public JFrame getRef() {
 		return this;
 	}
 
+	private int valStrategy;
 	private JLabel jlStrategy;
 
 	private JLabel jlQFiles;
@@ -134,6 +142,8 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 
 		jlStrategy.setLocation(10, 10);
 		jtfStrategy.setLocation(130, 10);
+		jtfStrategy.setText(JPAConstants.JPA_STRATEGIES[valStrategy]);
+		jtfStrategy.setEditable(false);
 
 		jlQFiles.setSize(110, 30);
 		jtfQFiles.setSize(200, 30);
@@ -257,14 +267,15 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 				if(tE>0 && sazon>0){ //Veririfa se o tempo de experimento e a sazonalidade foram preenchidos
 					int nSteps = tE/sazon; //Calcula em quantas etapas serão realizadas o experimento
 					if(nSteps>10) nSteps = 10;
+					int stepsBorder = 1;//será utilizado na borda
 					fieldsSazon = new JTextField[nSteps*4];
 					internalScroll.removeAll();
 					internalScroll.setLayout(new GridLayout(nSteps,1,2,2));
-					for(int i=0; i<nSteps;i++){
+					for(int i=0; i<nSteps*4;i+=4){
 						JPanel jp = new JPanel();
 						jp.setSize(500,60);
 						jp.setLayout(new GridLayout(2,4,30,4));
-						jp.setBorder(BorderFactory.createTitledBorder("Step "+(i+1))); //Adciona a borda para o painel da estava
+						jp.setBorder(BorderFactory.createTitledBorder("Step "+stepsBorder)); //Adciona a borda para o painel da estava
 						//Adiciona os labels e campos de texto para cada tipo de query
 						JLabel jl1 = new JLabel("SELECT(%): ");
 						jl1.setMinimumSize(new Dimension(60,30));
@@ -304,6 +315,7 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 						fieldsSazon[i+1] = jtf2;
 						fieldsSazon[i+2] = jtf3;
 						fieldsSazon[i+3] = jtf4;
+						stepsBorder++;
 					}
 					internalScroll.setMaximumSize(new Dimension(nSteps*30*2,500));//Calcula o tamanho do painel que contem todos os paineis de etapa
 					internalScroll.validate();
@@ -317,17 +329,38 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		jbExecute.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(!checkQueriesSazonFields())
+				boolean cont = true;
+				
+				if(!checkQueriesSazonFields()){
 					JOptionPane.showMessageDialog(null, "A soma interna de todos os campos de cada step, deve ser igual a 100%.");
-				
-				if(!checkMandatoryFields())
+					cont=false;
+				}
+				if(!checkMandatoryFields()){
 					JOptionPane.showMessageDialog(null, "Os campos 'Time Experiment' e 'Nº Clients' devem ser maiores que zero.");
+					cont=false;
+				}
 				
-				if(jtfQFiles.getText().equals(""))
+				if(jtfQFiles.getText().equals("")){
 					JOptionPane.showMessageDialog(null, "Escolha um arquivo de consultas para prosseguir.");
+					cont=false;
+				}
+				
+				if(cont){
+					int steps[] = null;
+					if(fieldsSazon!=null){
+						steps = new int[fieldsSazon.length];
+					
+						for(int i=0; i<fieldsSazon.length;i++){
+							steps[i] = Integer.parseInt(fieldsSazon[i].getText());
+						}
+					}
+					ExperimentFile ef = new ExperimentFile();
+					if(ef.create(valStrategy, valNClients, steps, jtfQFiles.getText(), valTExperiment, valSazon))
+						JOptionPane.showMessageDialog(null, "Roteiro do experimento gerado em "+System.getProperty("user.home"));
+				}
 			}
+			
 		});
-		
 	}
 
 	private boolean checkMandatoryFields(){
@@ -348,7 +381,7 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 						fieldsSazon[i].setText("0");
 						this.validate();
 					}
-					if((i+1)!=1 && (i+1)%4==0 ){
+					if((i+1)!=1 && (i+1)%4==0){
 						if(total!=100)
 							return false;
 						total=0;
@@ -393,13 +426,6 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		jlQuanQueries.setText("<html><font color=gray size=-1>SELECT: <b>"+select+"</b> | INSERT: <b>"+insert+"</b> | UPDATE: <b>"+update+"</b> | DELETE: <b>"+delete+"</b></font></html>");    
 		this.validate();    
 	}
-	public void enabledAllControls(boolean state) {
-		jtfQFiles.setEnabled(state);
-		jtfNClients.setEnabled(state);
-		jtfTExperiment.setEnabled(state);
-		jtfSazon.setEnabled(state);
-		jbExecute.setEnabled(state);
-	}
 
 	public void unsetAllTextFields() {
 		jtfQFiles.setText("");
@@ -411,12 +437,11 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 	public void execute() {
 		build();
 		events();
-		enabledAllControls(true);
 		setVisible(true);
 	}
 	
 	public static void main(String args[]){
-		new ConfigurationExperimentGUI().execute();
+//		new ConfigurationExperimentGUI().execute();
 	}
 
 	@Override
@@ -431,7 +456,5 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		if(e==jtfSazon){
 			valSazon = ((Integer)jtfSazon.getValue()).intValue();
 		}
-		
 	}
-
 }
