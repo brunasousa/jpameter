@@ -6,5 +6,7 @@
 	<classpathentry kind="lib" path="src/libs/xswingx.jar"/>
 	<classpathentry kind="lib" path="src/libs/mysql-connector-java-5.1.26-bin.jar"/>
 	<classpathentry kind="lib" path="src/libs/jdom-2.0.2.jar"/>
+	<classpathentry kind="lib" path="src/libs/jcommon-1.0.21.jar"/>
+	<classpathentry kind="lib" path="src/libs/jfreechart-1.0.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

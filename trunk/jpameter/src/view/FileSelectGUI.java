@@ -146,7 +146,7 @@ public class FileSelectGUI extends JFrame{
 		for(File file : files)
 			if(file!=null)
 				if(f.getName().equals(file.getName())){
-					JOptionPane.showMessageDialog(this, "O arquivo "+f.getName()+" j√° foi escolhido \ne n√£o pode ser selecionado novamente.");
+					JOptionPane.showMessageDialog(this, "O arquivo "+f.getName()+" j· foi escolhido \ne n„o pode ser selecionado novamente.");
 					return true;
 				}
 		return false;

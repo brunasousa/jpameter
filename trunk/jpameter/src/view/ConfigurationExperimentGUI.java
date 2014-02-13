@@ -106,9 +106,9 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 
 		jlStrategy = new JLabel("JPA Strategy");
 		jlQFiles = new JLabel("Queries File: ");
-		jlNClients = new JLabel("Nº Clients: ");
-		jlTExperiment = new JLabel("Time Experimet: ");
-		jlSazon = new JLabel("Sazonalidade: ");
+		jlNClients = new JLabel("Client's number: ");
+		jlTExperiment = new JLabel("Experiment time: ");
+		jlSazon = new JLabel("Sazonality: ");
 		jlMin = new JLabel("min");
 		jlMin2 = new JLabel("min");
 		jlQuanQueries = new JLabel();
