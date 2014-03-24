@@ -262,11 +262,14 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		jbCalSteps.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int tE = Integer.parseInt(jtfTExperiment.getText());
-				int sazon = Integer.parseInt(jtfSazon.getText());
+				int tE = valTExperiment;
+				int sazon = valSazon;
 				if(tE>0 && sazon>0){ //Veririfa se o tempo de experimento e a sazonalidade foram preenchidos
 					int nSteps = tE/sazon; //Calcula em quantas etapas serão realizadas o experimento
-					if(nSteps>10) nSteps = 10;
+					if(nSteps>10){ 
+						nSteps = 10;
+						JOptionPane.showMessageDialog(null, "Podem ser gerados no máximo 10 steps.");
+					}
 					int stepsBorder = 1;//será utilizado na borda
 					fieldsSazon = new JTextField[nSteps*4];
 					internalScroll.removeAll();
@@ -282,24 +285,28 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 						JTextField jtf1 = new JTextField();
 						jtf1.setMinimumSize(new Dimension(100,30));
 						jtf1.setMaximumSize(new Dimension(100,30));
+						jtf1.setText("25");
 						
 						JLabel jl2 = new JLabel("INSERT(%): ");
 						jl2.setMinimumSize(new Dimension(60,30));
 						JTextField jtf2 = new JTextField();
 						jtf2.setMinimumSize(new Dimension(100,30));
 						jtf2.setMaximumSize(new Dimension(100,30));
+						jtf2.setText("25");
 						
 						JLabel jl3 = new JLabel("UPDATE(%): ");
 						jl3.setMinimumSize(new Dimension(60,30));
 						JTextField jtf3 = new JTextField();
 						jtf3.setMinimumSize(new Dimension(100,30));
 						jtf3.setMaximumSize(new Dimension(100,30));
+						jtf3.setText("25");
 						
 						JLabel jl4 = new JLabel("DELETE(%): ");
 						jl4.setMinimumSize(new Dimension(60,30));
 						JTextField jtf4 = new JTextField();
 						jtf4.setMinimumSize(new Dimension(100,30));
 						jtf4.setMaximumSize(new Dimension(100,30));
+						jtf4.setText("25");
 						
 						jp.add(jl1);
 						jp.add(jtf1);

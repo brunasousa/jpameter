@@ -8,4 +8,5 @@ public class ConectionData {
 	public static String SCHEMA;
 	public static String USER;
 	public static String PASS;
+	public static String DRIVER;
 }

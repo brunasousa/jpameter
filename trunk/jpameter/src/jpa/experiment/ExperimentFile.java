@@ -20,13 +20,19 @@ public class ExperimentFile {
 		Element dbConfig = new Element("db-config");
 		Element experiment = new Element("experiment");
 		
+		dbConfig.addContent(new Element("driver").setText(ConectionData.DRIVER));
 		dbConfig.addContent(new Element("url").setText(ConectionData.HOST+":"+ConectionData.PORT));
 		dbConfig.addContent(new Element("user").setText(ConectionData.USER));
 		dbConfig.addContent(new Element("password").setText(ConectionData.PASS));
 		dbConfig.addContent(new Element("database").setText(ConectionData.SCHEMA));
+		dbConfig.addContent(new Element("query_file").setText(queryFile));
 		provider.setText(JPAConstants.JPA_STRATEGIES[jpaProvider]);
 		
-		if(steps!=null)
+		jpameter.addContent(provider);
+		jpameter.addContent(dbConfig);
+		jpameter.addContent(new Element("threads").setText(String.valueOf(nTreads)));
+		
+		if(steps!=null){
 			for(int i=0;i<steps.length;i+=4){
 				Element s = new Element("step");
 				s.setAttribute(new Attribute("time", String.valueOf(sazon)));
@@ -36,10 +42,8 @@ public class ExperimentFile {
 				s.addContent(new Element("delete").setText(String.valueOf(steps[i+3])));
 				experiment.addContent(s);
 			}
-		jpameter.addContent(provider);
-		jpameter.addContent(dbConfig);
-		jpameter.addContent(new Element("threads").setText(String.valueOf(nTreads)));
-		jpameter.addContent(experiment);
+			jpameter.addContent(experiment);
+		}
 		
 		Document d = new Document(jpameter);
 		XMLOutputter xmlOut = new XMLOutputter();
