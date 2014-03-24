@@ -234,6 +234,7 @@ public class DBMSConnectionGUI extends JFrame {
 						ConectionData.PASS = new String(jtfPassword.getPassword());
 						ConectionData.PORT = jtfPort.getText();
 						ConectionData.USER = jtfUser.getText();
+						ConectionData.DRIVER = jcbDBMS.getSelectedItem().toString();
 						return;
 					}
 					JOptionPane.showMessageDialog(getRef(),
