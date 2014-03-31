@@ -180,27 +180,6 @@ public class GeneratedCodeGUI extends JFrame {
 						return;
 					}
 				}
-				//Adicionado para testar criação do jar 
-				try {
-					c.addDependencies(CompilerConstants.ECLIPSELINK);
-					c.addDependencies(CompilerConstants.COMMONS);
-					c.addMainClasses();
-					FilesApplication fa = new FilesApplication();
-					fa.generatePersistenseFile(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR
-												+System.getProperty("file.separator")
-												+"META-INF"
-												+System.getProperty("file.separator"), JPAConstants.JPA_ECLIPSELINK);
-					c.compileClasses();
-					c.generateJar();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} 
-					catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
 				
 				JOptionPane.showMessageDialog(getRef(), "Classes geradas com sucesso!",
 						"JPAMeter", JOptionPane.INFORMATION_MESSAGE);

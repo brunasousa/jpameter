@@ -34,7 +34,7 @@ public class ManagerExperiment extends Thread implements Observer{
 	}
 
 	public void getExperimentInformation(){
-		File experimentFile = new File("/home/chico/experiment.xml");
+		File experimentFile = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"experiment.xml");
 		SAXBuilder sb = new SAXBuilder();  
 		Document d = null;
 		try {
@@ -82,17 +82,18 @@ public class ManagerExperiment extends Thread implements Observer{
 				System.out.println("Executando step de "+query.getName());
 				System.out.println("timeExec: "+timeExe);
 				System.out.println(query.getName());
-				
-				for(int j = 1; j<= nThreads; j++){
-					System.out.println("Criando thread "+j+" de "+query.getName());
-					QueryThread qt =  new QueryThread(queryFile, timeExe, query.getName());
-					qt.setName("thread "+j+" de "+query.getName());
-					qt.addObserver(this);
-					Thread t = new Thread(qt);
-					t.start();
+				if(time > 0){
+					for(int j = 1; j<= nThreads; j++){
+						System.out.println("Criando thread "+j+" de "+query.getName());
+						QueryThread qt =  new QueryThread(queryFile, timeExe, query.getName());
+						qt.setName("thread "+j+" de "+query.getName());
+						qt.addObserver(this);
+						Thread t = new Thread(qt);
+						t.start();
+					}
+					System.out.println("Suspendendo");
+					this.suspend();
 				}
-				System.out.println("Suspendendo");
-				this.suspend();
 			}
 		}
 	}

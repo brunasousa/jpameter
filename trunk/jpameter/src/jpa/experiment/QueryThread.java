@@ -82,7 +82,7 @@ public class QueryThread extends Observable implements Runnable{
 		EntityManager em = factory.createEntityManager();
 		em.getTransaction().begin();
 
-		if(typeQuery == 1){
+		if(typeQuery+1 == 1){
 			q = em.createNativeQuery(sql);
 			pojoList = q.getResultList();
 			rows = pojoList.size();
