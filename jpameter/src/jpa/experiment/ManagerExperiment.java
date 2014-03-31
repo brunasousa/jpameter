@@ -1,8 +1,6 @@
 package jpa.experiment;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
@@ -13,7 +11,6 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-import org.jfree.chart.plot.ThermometerPlot;
 
 public class ManagerExperiment extends Thread implements Observer{
 	private String url;
@@ -22,14 +19,14 @@ public class ManagerExperiment extends Thread implements Observer{
 	private String password;
 	private String queryFile;
 	private int nThreads;
+	private int nRunningThread = 0;
+
+	private List<Element> steps;
 
 	public static void main(String args[]){
 		ManagerExperiment me = new ManagerExperiment();
 		me.start();
 	}
-	private List<QueryThread> queryTs = new ArrayList<QueryThread>();
-	
-	private List steps;
 	
 	public ManagerExperiment(){
 		super();
@@ -83,7 +80,6 @@ public class ManagerExperiment extends Thread implements Observer{
 				int sazon = Integer.parseInt(query.getValue());
 				long timeExe = TimeUnit.MINUTES.toMillis(time)/(100/sazon);
 				System.out.println("Executando step de "+query.getName());
-				System.out.println("sazon: "+sazon);
 				System.out.println("timeExec: "+timeExe);
 				System.out.println(query.getName());
 				
@@ -91,7 +87,6 @@ public class ManagerExperiment extends Thread implements Observer{
 					System.out.println("Criando thread "+j+" de "+query.getName());
 					QueryThread qt =  new QueryThread(queryFile, timeExe, query.getName());
 					qt.setName("thread "+j+" de "+query.getName());
-					queryTs.add(qt);
 					qt.addObserver(this);
 					Thread t = new Thread(qt);
 					t.start();
@@ -104,18 +99,16 @@ public class ManagerExperiment extends Thread implements Observer{
 	
 	@Override
 	public void update(Observable o, Object arg) {
-		boolean allFinished = true;
+		
 		System.out.println("Terminando "+((QueryThread)o).getName());
-		for(QueryThread qt:queryTs){
-			if(qt.isExecuting()){
-				allFinished = false;
-				break;
-			}
-		}
-		if(allFinished){
-			this.resume();
+		
+		if(!((QueryThread)o).isExecuting())
+			nRunningThread++;
+		
+		if(nRunningThread == nThreads){
 			System.out.println("Vontando de onde parou");
-			queryTs.removeAll(queryTs);
+			this.resume();
+			nRunningThread = 0;
 		}
 	}
 
