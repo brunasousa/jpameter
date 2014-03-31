@@ -1,11 +1,13 @@
 package jpa.compiler;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -153,6 +155,50 @@ public class Compiler {
 		return true;
 	}
 	
+	public void addMainClasses(){ //Não deve ficar assim, precisar ser arrumado
+		
+		File f1 = new File(System.getProperty("user.dir")+separator
+						+"src"+separator
+						+"jpa"+separator
+						+"experiment"+separator+"ManagerExperiment.java");
+		
+		File f2 = new File(System.getProperty("user.dir")+separator
+				+"src"+separator
+				+"jpa"+separator
+				+"experiment"+separator+"QueryThread.java");
+		
+		
+		try {
+			BufferedReader br1 = new BufferedReader(new FileReader(f1));
+			String contentFile1="";
+			for(int i=0;br1.ready();i++){
+				if(i>0)
+					contentFile1+=br1.readLine()+"\n";
+				else
+					br1.readLine();
+			}
+			
+			BufferedReader br2 = new BufferedReader(new FileReader(f2));
+			String contentFile2="";
+			for(int i=0;br2.ready();i++){
+				if(i>0)
+					contentFile2+=br2.readLine()+"\n";
+				else
+					br2.readLine();
+			}
+			
+			saveClass(contentFile1);
+			saveClass(contentFile2);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void compileClasses() throws IOException, InterruptedException{
 		
 		String sourceFiles = CompilerConstants.DEFAULT_FOLDER
@@ -167,6 +213,13 @@ public class Compiler {
 								+"src"
 								+separator
 								+"libs"+separator+"eclipselink"+separator+"javax.persistence_2.1.0.v201304241213.jar";
+		
+		pathDependencies+= System.getProperty("path.separator")
+						+System.getProperty("user.dir")
+						+separator
+						+"src"
+						+separator
+						+"libs"+separator+"commons"+separator+"jdom-2.0.2.jar";
 		
 		String pathFinal = 	CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR;
 		

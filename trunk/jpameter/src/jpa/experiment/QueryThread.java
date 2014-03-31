@@ -1,11 +1,19 @@
 package jpa.experiment;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Random;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -19,7 +27,10 @@ public class QueryThread extends Observable implements Runnable{
 	private boolean executing = true;
 	private String name;
 	private int typeQuery = 0;
-	private final String TYPE_QUERY[] = new String []{"select", "insert", "update", "delete"};	
+	
+	private final String TYPE_QUERY[] = new String []{"select", "insert", "update", "delete"};
+	private static final String PERSISTENCE_UNIT_NAME = "jpameter";
+	private final String fileResult = System.getProperty("user.home")+System.getProperty("file.separator")+"Result_JPAMeter.txt";
 	
 	public QueryThread(String queryFile, long timeExec, String type){
 		this.queryFile = queryFile;
@@ -39,22 +50,50 @@ public class QueryThread extends Observable implements Runnable{
 	public void run() {
 		
 		long fullTime = 0;
-		long time = 0;
 		
 		while(fullTime < timeExec){
-			time = System.currentTimeMillis();
-//			System.out.println("Query escolhida: "+chooserQuery());
-		//Ler query do arquivo xml
-		//Marcar inicio de uma nova consulta
-		//Executar consulta
-		//Estruturar dados
-		//Finalizar marcacao de tempo
-		//Gravar tempo de execucao em arquivo
-			time = System.currentTimeMillis() - time;
-			fullTime += time;
+			//Ler query do arquivo xml e seleciona uma consulta sql
+			String sql = chooserQuery();
+			//Marcar inicio de uma nova consulta
+			long timeInit = System.currentTimeMillis();
+			
+			//Executar consulta
+			int rows = processSQL(sql);
+		
+			//Finalizar marcacao de tempo
+			long timeF = System.currentTimeMillis() - timeInit;
+			fullTime += timeF;
+			
+			String result = timeInit+"|"+this.getName()+"|"+timeF+"|"+sql+"|"+rows;
+			
+			//Gravar dados de execucao em arquivo
+			writeInFile(result);
 		}
 		
 		setExecuting(false);
+	}
+	
+	private int processSQL(String sql){
+		Query q = null;
+		int rows;
+		List pojoList = null;
+		
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+		EntityManager em = factory.createEntityManager();
+		em.getTransaction().begin();
+
+		if(typeQuery == 1){
+			q = em.createNativeQuery(sql);
+			pojoList = q.getResultList();
+			rows = pojoList.size();
+		}else{
+			rows = q.executeUpdate();
+		}
+
+		em.getTransaction().commit();
+		em.close();
+		
+		return rows;
 	}
 	
 	private String chooserQuery(){
@@ -78,8 +117,6 @@ public class QueryThread extends Observable implements Runnable{
 		Iterator i = query.iterator();
 		
 		while(i.hasNext()){
-//			System.out.println(((Element)i.next()).getChild("type").getValue());
-//			System.out.println(((Element)i.next()).getChild("sql").getValue());
 			Element type = ((Element)i.next()).getChild("type");
 			if(Integer.parseInt(type.getValue())==typeQuery+1){
 				Element sql = ((Element)i.next()).getChild("sql");
@@ -90,6 +127,25 @@ public class QueryThread extends Observable implements Runnable{
 			return queries.get(r.nextInt(queries.size()));
 		else
 			return null;
+	}
+	
+	private void writeInFile(String line){
+		File f = new File(fileResult);
+		if(!f.exists())
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(new BufferedWriter(new FileWriter(f,true)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		pw.println(line);
+		pw.close();
 	}
 	
 	public boolean isExecuting() {
@@ -109,6 +165,4 @@ public class QueryThread extends Observable implements Runnable{
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
 }
