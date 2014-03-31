@@ -33,6 +33,9 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import jpa.JPAConstants;
+import jpa.compiler.Compiler;
+import jpa.compiler.CompilerConstants;
+import jpa.compiler.FilesApplication;
 import jpa.experiment.ExperimentFile;
 
 import org.jdom2.Document;
@@ -362,8 +365,34 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 						}
 					}
 					ExperimentFile ef = new ExperimentFile();
-					if(ef.create(valStrategy, valNClients, steps, jtfQFiles.getText(), valTExperiment, valSazon))
+					if(ef.create(valStrategy, valNClients, steps, jtfQFiles.getText(), valTExperiment, valSazon)){
 						JOptionPane.showMessageDialog(null, "Roteiro do experimento gerado em "+System.getProperty("user.home"));
+						
+						Compiler c = new Compiler();
+						//Adicionado para testar criação do jar 
+						try {
+							c.addDependencies(CompilerConstants.ECLIPSELINK);
+							c.addDependencies(CompilerConstants.COMMONS);
+							c.addMainClasses();
+							FilesApplication fa = new FilesApplication();
+							fa.generatePersistenseFile(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR
+														+System.getProperty("file.separator")
+														+"META-INF"
+														+System.getProperty("file.separator"), JPAConstants.JPA_ECLIPSELINK);
+							c.compileClasses();
+							c.generateJar();
+							
+							JOptionPane.showMessageDialog(null, "Jar do experimento gerado em "+CompilerConstants.DEFAULT_FOLDER);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} 
+							catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						
+					}
 				}
 			}
 			
