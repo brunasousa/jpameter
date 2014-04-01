@@ -78,11 +78,12 @@ public class ManagerExperiment extends Thread implements Observer{
 			while(q.hasNext()){
 				Element query = (Element)q.next();
 				int sazon = Integer.parseInt(query.getValue());
-				long timeExe = TimeUnit.MINUTES.toMillis(time)/(100/sazon);
-				System.out.println("Executando step de "+query.getName());
-				System.out.println("timeExec: "+timeExe);
-				System.out.println(query.getName());
-				if(time > 0){
+				if(sazon > 0){
+					long timeExe = TimeUnit.MINUTES.toMillis(time)/(100/sazon);
+					System.out.println("Executando step de "+query.getName());
+					System.out.println("timeExec: "+timeExe);
+					System.out.println(query.getName());
+				
 					for(int j = 1; j<= nThreads; j++){
 						System.out.println("Criando thread "+j+" de "+query.getName());
 						QueryThread qt =  new QueryThread(queryFile, timeExe, query.getName());
