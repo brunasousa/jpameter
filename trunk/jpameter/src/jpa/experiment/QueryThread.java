@@ -54,6 +54,7 @@ public class QueryThread extends Observable implements Runnable{
 		while(fullTime < timeExec){
 			//Ler query do arquivo xml e seleciona uma consulta sql
 			String sql = chooserQuery();
+			System.out.println(sql);
 			//Marcar inicio de uma nova consulta
 			long timeInit = System.currentTimeMillis();
 			
@@ -81,9 +82,9 @@ public class QueryThread extends Observable implements Runnable{
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
 		EntityManager em = factory.createEntityManager();
 		em.getTransaction().begin();
-
+		q = em.createNativeQuery(sql);
+		
 		if(typeQuery+1 == 1){
-			q = em.createNativeQuery(sql);
 			pojoList = q.getResultList();
 			rows = pojoList.size();
 		}else{
@@ -113,13 +114,12 @@ public class QueryThread extends Observable implements Runnable{
 		Element jpameterTag = d.getRootElement();  
 		Element queriesTag = jpameterTag.getChild("queries");
 		
-		List query = queriesTag.getChildren();
-		Iterator i = query.iterator();
+		List<Element> query = queriesTag.getChildren();
 		
-		while(i.hasNext()){
-			Element type = ((Element)i.next()).getChild("type");
+		for(Element e: query){
+			Element type = e.getChild("type");
 			if(Integer.parseInt(type.getValue())==typeQuery+1){
-				Element sql = ((Element)i.next()).getChild("sql");
+				Element sql = e.getChild("sql");
 				queries.add(sql.getValue());
 			}
 		}
