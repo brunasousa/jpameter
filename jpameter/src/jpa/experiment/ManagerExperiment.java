@@ -18,9 +18,10 @@ public class ManagerExperiment extends Thread implements Observer{
 	private String user;
 	private String password;
 	private String queryFile;
+	private String fileResult;
 	private int nThreads;
 	private int nRunningThread = 0;
-
+	
 	private List<Element> steps;
 
 	public static void main(String args[]){
@@ -47,6 +48,9 @@ public class ManagerExperiment extends Thread implements Observer{
 		
 		Element jpameter = d.getRootElement();  
 		
+		//Informacoes JPAStrategy
+		Element jpaStrategy = jpameter.getChild("jpa-provider");
+		
 		//Informacoes do banco de dados (OBS: esses dados são configurados automaticamente no persistense.xml quando o experimento é compilado juntamente com as bibliotecas)
 		Element dbConfig = jpameter.getChild("db-config");
 		url = dbConfig.getChild("url").getValue();
@@ -62,6 +66,8 @@ public class ManagerExperiment extends Thread implements Observer{
 		//Passos do experimento
 		Element experiment = jpameter.getChild("experiment");
 		steps = experiment.getChildren();
+		
+		fileResult = "JM_"+jpaStrategy.getValue().toUpperCase()+"_"+System.currentTimeMillis()+".txt";
 	}
 
 	@Override
@@ -86,7 +92,7 @@ public class ManagerExperiment extends Thread implements Observer{
 				
 					for(int j = 1; j<= nThreads; j++){
 						System.out.println("Criando thread "+j+" de "+query.getName());
-						QueryThread qt =  new QueryThread(queryFile, timeExe, query.getName());
+						QueryThread qt =  new QueryThread(queryFile, timeExe, query.getName(), fileResult);
 						qt.setName("thread "+j+" de "+query.getName());
 						qt.addObserver(this);
 						Thread t = new Thread(qt);

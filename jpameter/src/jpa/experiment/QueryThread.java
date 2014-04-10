@@ -30,9 +30,9 @@ public class QueryThread extends Observable implements Runnable{
 	
 	private final String TYPE_QUERY[] = new String []{"select", "insert", "update", "delete"};
 	private static final String PERSISTENCE_UNIT_NAME = "jpameter";
-	private final String fileResult = System.getProperty("user.home")+System.getProperty("file.separator")+"Result_JPAMeter.txt";
+	private String fileResult;
 	
-	public QueryThread(String queryFile, long timeExec, String type){
+	public QueryThread(String queryFile, long timeExec, String type, String fileResult){
 		this.queryFile = queryFile;
 		this.timeExec = timeExec;
 		
@@ -44,6 +44,9 @@ public class QueryThread extends Observable implements Runnable{
 			
 		if(type.toLowerCase().equals(TYPE_QUERY[3]))
 			typeQuery =  3;
+		
+		this.fileResult = fileResult;
+		
 	}
 
 	@Override
@@ -87,6 +90,7 @@ public class QueryThread extends Observable implements Runnable{
 		if(typeQuery+1 == 1){
 			pojoList = q.getResultList();
 			rows = pojoList.size();
+			if(rows>0) System.out.println("Tipo da Lista: "+pojoList.get(0).getClass());
 		}else{
 			rows = q.executeUpdate();
 		}

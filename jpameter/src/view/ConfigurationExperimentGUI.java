@@ -52,7 +52,7 @@ import org.jdom2.input.SAXBuilder;
 public class ConfigurationExperimentGUI extends JFrame implements PropertyChangeListener{
 
 	public ConfigurationExperimentGUI(int jpaStrategy){
-		
+		valStrategy = jpaStrategy;
 	}
 	
 	public JFrame getRef() {
@@ -371,14 +371,25 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 						Compiler c = new Compiler();
 						//Adicionado para testar criação do jar 
 						try {
-							c.addDependencies(CompilerConstants.ECLIPSELINK);
+							String libsJPA = CompilerConstants.HIBERNATE;
+							
+							switch (valStrategy) {
+							case JPAConstants.JPA_ECLIPSELINK:
+								libsJPA = CompilerConstants.ECLIPSELINK;
+								break;
+							case JPAConstants.JPA_OPENJPA:
+								libsJPA = CompilerConstants.OPENJPA;
+								break;
+							}
+							
+							c.addDependencies(libsJPA);
 							c.addDependencies(CompilerConstants.COMMONS);
 							c.addMainClasses();
 							FilesApplication fa = new FilesApplication();
 							fa.generatePersistenseFile(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR
 														+System.getProperty("file.separator")
 														+"META-INF"
-														+System.getProperty("file.separator"), JPAConstants.JPA_ECLIPSELINK);
+														+System.getProperty("file.separator"), valStrategy);
 							c.compileClasses();
 							c.generateJar();
 							
