@@ -255,9 +255,11 @@ public class Compiler {
 			for(File file: files){
 				if(!file.isDirectory()){
 					String name = file.getName().toUpperCase();
-					String ext = name.substring(name.lastIndexOf("."), name.length()); 
-					if(ext.equals(".SF")||ext.equals(".DSA")||ext.equals(".RSA")||ext.equals(".EC"))
-						file.delete();
+					if(name.lastIndexOf(".") != -1){
+						String ext = name.substring(name.lastIndexOf("."), name.length());
+						if(ext.equals(".SF")||ext.equals(".DSA")||ext.equals(".RSA")||ext.equals(".EC"))
+							file.delete();
+					}
 				}
 			}
 		}
