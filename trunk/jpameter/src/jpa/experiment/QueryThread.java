@@ -84,19 +84,24 @@ public class QueryThread extends Observable implements Runnable{
 		
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
 		EntityManager em = factory.createEntityManager();
-		em.getTransaction().begin();
-		q = em.createNativeQuery(sql);
 		
-		if(typeQuery+1 == 1){
-			pojoList = q.getResultList();
-			rows = pojoList.size();
-			if(rows>0) System.out.println("Tipo da Lista: "+pojoList.get(0).getClass());
-		}else{
-			rows = q.executeUpdate();
+		try{
+			em.getTransaction().begin();
+			q = em.createNativeQuery(sql);
+			
+			if(typeQuery+1 == 1){
+				pojoList = q.getResultList();
+				rows = pojoList.size();
+				if(rows>0) System.out.println("Tipo da Lista: "+pojoList.get(0).getClass());
+			}else{
+				rows = q.executeUpdate();
+			}
+			
+			em.getTransaction().commit();
+		}finally{
+			em.close();
+			factory.close(); // OpenJPA so fecha as conexoes se o ManagerFactory for fechado tambem
 		}
-
-		em.getTransaction().commit();
-		em.close();
 		
 		return rows;
 	}

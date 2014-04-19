@@ -24,6 +24,10 @@ public class FilesApplication {
 				file+=propertiesHibernate();
 				break;
 				
+			case JPAConstants.JPA_OPENJPA:
+				file+=propertiesOpenJPA();
+				break;
+				
 			default:
 				file+=propertiesDefault();
 		}
@@ -67,6 +71,18 @@ public class FilesApplication {
 		return properties;
 	}
 	
+	public String propertiesOpenJPA(){
+		String properties = "  <properties>\n";
+		properties+= "    <property name='openjpa.ConnectionDriverName' value='com.mysql.jdbc.Driver' />\n";
+		properties+= "    <property name='openjpa.ConnectionURL'  value='jdbc:mysql://"+ConectionData.HOST+":"+ConectionData.PORT+"/"+ConectionData.SCHEMA+"' />\n";
+		properties+= "    <property name='openjpa.ConnectionUserName' value='"+ConectionData.USER+"' />\n";
+		properties+= "    <property name='openjpa.ConnectionPassword' value='"+ConectionData.PASS+"' />\n";
+		properties+= "    <property name='openjpa.RuntimeUnenhancedClasses' value='supported' />\n";
+		properties+= "  </properties>\n";
+		
+		return properties;
+	}
+	
 	public String persistenceClass(){
 		String persistencesClass = "";
 		String path = 	CompilerConstants.DEFAULT_FOLDER
@@ -77,7 +93,7 @@ public class FilesApplication {
 		File f = new File(path);
 		File[] listFiles = f.listFiles();
 		for(File file : listFiles)
-			if(!f.getName().equals("Main.java"))
+			if(!file.getName().equals("ManagerExperiment.java") && !file.getName().equals("QueryThread.java"))
 				persistencesClass+="  <class>"+file.getName().substring(0,file.getName().lastIndexOf("."))+"</class>\n";
 		
 		return persistencesClass;
