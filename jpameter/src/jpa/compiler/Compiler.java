@@ -10,6 +10,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.sql.SQLException;
 import java.util.jar.JarEntry;
@@ -152,6 +154,30 @@ public class Compiler {
 			}
 		}
 		
+		return true;
+	}
+	
+	public boolean executeJar(String workDirectory, String nameJar){
+		System.out.println("Començando a executar!============================");
+		String line = "";
+		ProcessBuilder pb  = new ProcessBuilder("java", "-jar", "jpameter.jar");
+		pb.directory(new File(System.getProperty("user.home")+System.getProperty("file.separator")));
+		pb.redirectErrorStream(true);
+		try {
+			Process p = pb.start();
+			InputStream stdout = p.getInputStream ();
+			BufferedReader reader = new BufferedReader (new InputStreamReader(stdout));
+			line = reader.readLine();
+			while(line != null){
+				System.out.println(line);
+				line = reader.readLine();
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
 		return true;
 	}
 	

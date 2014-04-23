@@ -356,6 +356,7 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 				}
 				
 				if(cont){
+					getRef().dispose();
 					int steps[] = null;
 					if(fieldsSazon!=null){
 						steps = new int[fieldsSazon.length];
@@ -394,6 +395,8 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 							c.generateJar();
 							
 							JOptionPane.showMessageDialog(null, "Jar do experimento gerado em "+CompilerConstants.DEFAULT_FOLDER);
+							c.executeJar(System.getProperty("user.home"), "jpameter.jar");
+							System.exit(0);
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
