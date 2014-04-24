@@ -157,28 +157,25 @@ public class Compiler {
 		return true;
 	}
 	
-	public boolean executeJar(String workDirectory, String nameJar){
+	public BufferedReader executeJar(String pathJar){
 		System.out.println("Començando a executar!============================");
+		File f = new File(pathJar);
 		String line = "";
-		ProcessBuilder pb  = new ProcessBuilder("java", "-jar", "jpameter.jar");
-		pb.directory(new File(System.getProperty("user.home")+System.getProperty("file.separator")));
+		BufferedReader reader = null;
+		ProcessBuilder pb  = new ProcessBuilder("java", "-jar", f.getName());
+		pb.directory(new File(f.getParent()));
 		pb.redirectErrorStream(true);
 		try {
 			Process p = pb.start();
 			InputStream stdout = p.getInputStream ();
-			BufferedReader reader = new BufferedReader (new InputStreamReader(stdout));
-			line = reader.readLine();
-			while(line != null){
-				System.out.println(line);
-				line = reader.readLine();
-			}
+			reader = new BufferedReader (new InputStreamReader(stdout));
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return null;
 		}
-		return true;
+		return reader;
 	}
 	
 	public void addMainClasses(){ //Não deve ficar assim, precisar ser arrumado

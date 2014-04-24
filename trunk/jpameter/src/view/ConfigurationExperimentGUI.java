@@ -386,6 +386,7 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 							c.addDependencies(libsJPA);
 							c.addDependencies(CompilerConstants.COMMONS);
 							c.addMainClasses();
+							
 							FilesApplication fa = new FilesApplication();
 							fa.generatePersistenseFile(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR
 														+System.getProperty("file.separator")
@@ -395,7 +396,7 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 							c.generateJar();
 							
 							JOptionPane.showMessageDialog(null, "Jar do experimento gerado em "+CompilerConstants.DEFAULT_FOLDER);
-							c.executeJar(System.getProperty("user.home"), "jpameter.jar");
+							
 							System.exit(0);
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
