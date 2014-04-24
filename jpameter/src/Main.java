@@ -1,4 +1,5 @@
 import view.DBMSConnectionGUI;
+import view.HomeProjectView;
 
 
 public class Main {
@@ -7,7 +8,7 @@ public class Main {
 //		jpa.compiler.Compiler c = new jpa.compiler.Compiler();
 //		c.executeJar();
 		
-		DBMSConnectionGUI gui = new DBMSConnectionGUI();
+		HomeProjectView gui = new HomeProjectView();
 		gui.execute();
 	}
 
