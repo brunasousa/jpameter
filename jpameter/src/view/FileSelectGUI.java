@@ -35,10 +35,14 @@ public class FileSelectGUI extends JFrame{
 	private static File[] files = new File[3];
 
 	public FileSelectGUI() {
-		createComponents();
+		build();
+	}
+	
+	public JFrame getRef() {
+		return this;
 	}
 
-	private void createComponents() {
+	private void build() {
 		jlDescribe = new JLabel("Choose JPAMeter's Files:");
 		jlDescribe.setBounds(25, 2, 200, 20);
 		FileFilter ff = new FileNameExtensionFilter("Arquivos de Texto", "txt");
@@ -86,12 +90,11 @@ public class FileSelectGUI extends JFrame{
 		this.add(panelSelectFile);
 		this.setSize(430, 310);
 		this.setLayout(null);
-		this.setVisible(true);
 		this.setResizable(false);
 		this.setBackground(Color.WHITE);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.events();
+		events();
 	}
 	
 	public void events(){
@@ -117,25 +120,31 @@ public class FileSelectGUI extends JFrame{
 		btChart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JPAMeterView jmv = new JPAMeterView(files);
-				jmv.show();
+				if(files[0] == null && files[1]==null && files[2]==null){
+					JOptionPane.showMessageDialog(null, "Please, choose one file to continue.");
+				}else{
+					getRef().dispose();
+					JPAMeterView jmv = new JPAMeterView(files);
+					jmv.execute();
+				}
 			}
 		});
 	}
 	public void selectFile(Object o){
 		int ret = fc.showOpenDialog(FileSelectGUI.this);
+		JButton bt  = (JButton)o;
 		if(ret == JFileChooser.APPROVE_OPTION){
 			File f = fc.getSelectedFile();
 			if(!verifyFile(f)){
-				if(o == btChooser1){
+				if(bt.getText() == btChooser1.getText()){
 					jtfFile1.setText(f.getAbsolutePath());
 					files[0] = f; 
 				}
-				if(o == btChooser2){
+				if(bt.getText() == btChooser2.getText()){
 					jtfFile2.setText(f.getAbsolutePath());
 					files[1] = f; 
 				}
-				if(o == btChooser3){
+				if(bt.getText() == btChooser3.getText()){
 					jtfFile3.setText(f.getAbsolutePath());
 					files[2] = f; 
 				}
@@ -146,10 +155,15 @@ public class FileSelectGUI extends JFrame{
 		for(File file : files)
 			if(file!=null)
 				if(f.getName().equals(file.getName())){
-					JOptionPane.showMessageDialog(this, "O arquivo "+f.getName()+" j· foi escolhido \ne n„o pode ser selecionado novamente.");
+					JOptionPane.showMessageDialog(this, "O arquivo "+f.getName()+" j√° foi escolhido \ne n√£o pode ser selecionado novamente.");
 					return true;
 				}
 		return false;
+	}
+	
+	public void execute() {
+		build();
+		setVisible(true);
 	}
 	
 	public static void main(String[] args) {

@@ -162,6 +162,14 @@ public class ExecutingExperiment extends JFrame implements Runnable{
 	            thread.start();
 			}
 		});
+		
+		jbExit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				getRef().dispose();
+				new HomeProjectView().execute();
+			}
+		});
 	}
 
 	public void execute() {
