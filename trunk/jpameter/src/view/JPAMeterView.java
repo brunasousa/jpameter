@@ -31,10 +31,9 @@ public class JPAMeterView extends JFrame{
 	public JPAMeterView(File[] files) {
 		gc = new GenereteComplexityChart(files);
 		gm = new GenereteMeanTimeChart(files);
-		createComponents();
 	}
 
-	private void createComponents() {
+	private void build() {
 
 		jlOperacao = new JLabel("<html><h3>Resultados: </h3></html>");
 		jlOperacao.setBounds(5, 5, 300, 20);
@@ -95,6 +94,11 @@ public class JPAMeterView extends JFrame{
 		jcp.setPreferredSize(new Dimension(width, height));
 		jcp.createHorizontalScrollBar();
 		return jcp;
+	}
+	
+	public void execute() {
+		build();
+		setVisible(true);
 	}
 
 }

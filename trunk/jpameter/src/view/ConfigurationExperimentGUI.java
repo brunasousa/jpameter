@@ -397,7 +397,8 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 							
 							JOptionPane.showMessageDialog(null, "Jar do experimento gerado em "+CompilerConstants.DEFAULT_FOLDER);
 							
-							System.exit(0);
+							getRef().dispose();
+							new HomeProjectView().execute();
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -411,6 +412,16 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 				}
 			}
 			
+		});
+		
+		jbExit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int reply = JOptionPane.showConfirmDialog(null,
+	                    "Are you sure to exit the application?", "Quit", JOptionPane.YES_NO_OPTION);
+	            if (reply == JOptionPane.YES_OPTION)
+	                System.exit(0);				
+			}
 		});
 	}
 
@@ -489,10 +500,6 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		build();
 		events();
 		setVisible(true);
-	}
-	
-	public static void main(String args[]){
-//		new ConfigurationExperimentGUI().execute();
 	}
 
 	@Override
