@@ -393,10 +393,10 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 														+"META-INF"
 														+System.getProperty("file.separator"), valStrategy);
 							c.compileClasses();
-							c.generateJar();
+							c.generateJar(JPAConstants.JPA_STRATEGIES[valStrategy]);
 							
 							JOptionPane.showMessageDialog(null, "Jar do experimento gerado em "+CompilerConstants.DEFAULT_FOLDER);
-							
+							c.removeFiles(CompilerConstants.DEFAULT_FOLDER);
 							getRef().dispose();
 							new HomeProjectView().execute();
 						} catch (IOException e1) {

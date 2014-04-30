@@ -68,7 +68,7 @@ public class QueryThread extends Observable implements Runnable{
 			long timeF = System.currentTimeMillis() - timeInit;
 			fullTime += timeF;
 			
-			String result = timeInit+"|"+this.getName()+"|"+timeF+"|"+sql+"|"+rows;
+			String result = timeInit+"|"+this.getName()+"|"+timeF+"|"+TYPE_QUERY[typeQuery]+"|"+sql+"|"+rows;
 			
 			//Gravar dados de execucao em arquivo
 			writeInFile(result);

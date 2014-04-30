@@ -15,6 +15,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import jpa.graph.Chart;
 import jpa.graph.GenereteComplexityChart;
 import jpa.graph.GenereteMeanTimeChart;
 
@@ -43,15 +44,16 @@ public class JPAMeterView extends JFrame{
 		jpDesempnho = new JPanel();
 		
 		// Aba complexidade		
+		Chart charts[] = gc.genereteChartComplexity(); 
 		jpComplexidade.setSize(1000, 700);
-		jpComplexidade.add(gc.genereteChartComplexity()[0].getChart());
-		jpComplexidade.add(gc.genereteChartComplexity()[0].getLegend());
-		jpComplexidade.add(gc.genereteChartComplexity()[1].getChart());
-		jpComplexidade.add(gc.genereteChartComplexity()[1].getLegend());
-		jpComplexidade.add(gc.genereteChartComplexity()[2].getChart());
-		jpComplexidade.add(gc.genereteChartComplexity()[2].getLegend());
-		jpComplexidade.add(gc.genereteChartComplexity()[3].getChart());
-		jpComplexidade.add(gc.genereteChartComplexity()[3].getLegend());
+		jpComplexidade.add(charts[0].getChart());
+		jpComplexidade.add(charts[0].getLegend());
+		jpComplexidade.add(charts[1].getChart());
+		jpComplexidade.add(charts[1].getLegend());
+		jpComplexidade.add(charts[2].getChart());
+		jpComplexidade.add(charts[2].getLegend());
+		jpComplexidade.add(charts[3].getChart());
+		jpComplexidade.add(charts[3].getLegend());
 		
 		//Aba tempo médio
 		jpTempMedio.add(gm.genereteMeanTimeChart());

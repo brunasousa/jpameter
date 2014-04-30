@@ -30,12 +30,12 @@ public class Compiler {
 	
 	String separator = System.getProperty("file.separator");
 	
-	public void generateJar() throws IOException{
+	public void generateJar(String strategy) throws IOException{
 		removeSignedFiles();
 		File temp  = new File(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR);
 		FileOutputStream fout = new FileOutputStream(System.getProperty("user.home")
 													 +separator
-													 +"jpameter.jar");
+													 +"jpameter_"+strategy.toLowerCase()+"_"+System.currentTimeMillis()+".jar");
 		
 		File oldManifest = new File(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR+separator+"META-INF"+separator+"MANIFEST.MF");
 		if(oldManifest.exists())
@@ -288,24 +288,38 @@ public class Compiler {
 		}
 	}
 	
+	public void removeFiles(String path){
+		File f = new File(path);
+		if(f.isDirectory()){
+			File files [] = f.listFiles();
+			for(File file: files){
+				if(file.isDirectory())
+					removeFiles(file.getAbsolutePath());
+				else
+					file.delete();
+			}
+		}
+		f.delete();
+	}
+	
 	public static void main(String args[]){
-		try {
-			Compiler c = new Compiler();
+//		try {
+//			Compiler c = new Compiler();
 //			c.addDependencies(CompilerConstants.HIBERNATE);
 //			c.addDependencies(CompilerConstants.COMMONS);
-			FilesApplication fa = new FilesApplication();
-			fa.generatePersistenseFile(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR+"/META-INF/", JPAConstants.JPA_HIBERNATE);
+//			FilesApplication fa = new FilesApplication();
+//			fa.generatePersistenseFile(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR+"/META-INF/", JPAConstants.JPA_HIBERNATE);
 //			c.compileClasses();
-			c.generateJar();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			c.generateJar();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
 //		} catch (URISyntaxException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		} catch (InterruptedException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
-		}
+//		}
 	}
 }
