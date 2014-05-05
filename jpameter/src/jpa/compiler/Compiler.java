@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.channels.FileChannel;
 import java.sql.SQLException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -176,6 +177,40 @@ public class Compiler {
 			return null;
 		}
 		return reader;
+	}
+	
+	public boolean copyExperimentFileToFilesJar(String originPath){
+		String finalPath = CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR+separator+"experiment.xml";
+		return copyFileTo(originPath, finalPath);
+	}
+	
+	public boolean copyFileTo(String originPath, String finalPath){
+		
+		File oFile  = new File(originPath);
+		File fFile  = new File(finalPath);
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
+		
+		try {
+			fis = new FileInputStream(oFile);
+			fos = new FileOutputStream(fFile);
+			
+			FileChannel fcIn = fis.getChannel();
+			FileChannel fcOut = fos.getChannel();
+			
+			fcOut.transferFrom(fcIn, 0, fcIn.size());
+			
+		} catch (FileNotFoundException e) {
+			System.out.println("Erro ao selecionar aquivo de origem.");
+			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+			System.out.println("Erro ao copiar arquivos.");
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
 	}
 	
 	public void addMainClasses(){ //Não deve ficar assim, precisar ser arrumado
