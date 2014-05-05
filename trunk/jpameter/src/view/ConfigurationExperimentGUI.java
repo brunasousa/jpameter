@@ -3,6 +3,7 @@ package view;
 import icons.IconUtils;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -18,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -27,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
@@ -55,6 +58,10 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		valStrategy = jpaStrategy;
 	}
 	
+	public ConfigurationExperimentGUI(){
+		valStrategy = 1;
+	}
+	
 	public JFrame getRef() {
 		return this;
 	}
@@ -69,9 +76,12 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 	private JLabel jlMin;
 	private JLabel jlMin2;
 	private JLabel jlQuanQueries;
+	private JLabel jlFileExperiment;
+	private JLabel jlOr;
 
 	private JTextField jtfStrategy;
 	private JTextField jtfQFiles;
+	private JTextField jtfExperimentFile;
 	private JFormattedTextField jtfNClients;
 	private JFormattedTextField jtfTExperiment;
 	private JFormattedTextField jtfSazon;
@@ -80,6 +90,7 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 	private JButton jbExecute;
 	private JButton jbExit;
 	private JButton jbCalSteps;
+	private JButton jbExperimentFile;
 	
 	private JTextField[] fieldsSazon;
 	private JScrollPane jSFieldsSazon;
@@ -104,9 +115,17 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		jpTitle.add(new JLabel(new ImageIcon(IconUtils.class
 				.getResource("database_gear.png"))));
 		jpTitle.add(jlTitle);
-
+		
+		JPanel jpCenter = new JPanel(null);
+		
+		JPanel jpFileExperiment = new JPanel(null);
+		
 		JPanel jpForm = new JPanel(null);
-
+		
+		JSeparator js = new JSeparator();
+		
+		jlFileExperiment = new JLabel("Experiment File: ");
+		jlQFiles = new JLabel("Queries File: ");
 		jlStrategy = new JLabel("JPA Strategy");
 		jlQFiles = new JLabel("Queries File: ");
 		jlNClients = new JLabel("Client's number: ");
@@ -115,12 +134,14 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		jlMin = new JLabel("min");
 		jlMin2 = new JLabel("min");
 		jlQuanQueries = new JLabel();
+		jlOr = new JLabel("Or Make Your Experiment File:");
 
 		jtfQFiles = new JTextField("");
 		jtfNClients = new JFormattedTextField();
 		jtfTExperiment = new JFormattedTextField();
 		jtfSazon = new JFormattedTextField();
 		jtfStrategy = new JTextField("");
+		jtfExperimentFile = new JTextField("");
 		
 		jbExecute = new JButton("Execute", new ImageIcon(
 				IconUtils.class.getResource("database_connect.png")));
@@ -130,12 +151,20 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 				IconUtils.class.getResource("magnifier.png")));
 		jbCalSteps = new JButton("Calculate Steps");
 		
+		jbExperimentFile = new JButton("File", new ImageIcon(
+				IconUtils.class.getResource("magnifier.png")));
+		
 		jSFieldsSazon = new JScrollPane();
 		internalScroll = new JPanel();
 		
 		jfc = new JFileChooser();
 		
 		//Configuração dos componentes
+		jpFileExperiment.setBounds(0, 0, 550, 60);
+		js.setBounds(0, 61, 550, 3);
+		jlOr.setBounds(150, 64, 300, 20);
+		jpForm.setBounds(0, 90, 550, 500);
+		
 		FileFilter ff = new FileNameExtensionFilter("Extensible Markup Language", "xml");
 		jfc.setFileFilter(ff);
 		jfc.setAcceptAllFileFilterUsed(false);
@@ -156,7 +185,7 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		jtfQFiles.setLocation(130, 50);
 		jbChooser.setBounds(340, 50, 100, 30);
 
-		jlNClients.setSize(110, 30);
+		jlNClients.setSize(130, 30);
 		jtfNClients.setSize(80, 30);
 		
 		jlQuanQueries.setBounds(10, 90, 400, 30);
@@ -164,7 +193,7 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		jlNClients.setLocation(10, 130);
 		jtfNClients.setLocation(130, 130);
 
-		jlTExperiment.setSize(120, 30);
+		jlTExperiment.setSize(140, 30);
 		jtfTExperiment.setSize(80, 30);
 
 		jlTExperiment.setLocation(265, 130);
@@ -188,6 +217,11 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		
 		jbExecute.setSize(100, 30);
 		jbExit.setSize(100, 30);
+		
+		jlFileExperiment.setBounds(10,10,120,30);
+		jtfExperimentFile.setBounds(140,10,200,30);
+		jtfExperimentFile.setEditable(false);
+		jbExperimentFile.setBounds(360,10,100,30);
 		
 		//Validacao dos campos de texto
 		jtfTExperiment.setValue(new Integer(valTExperiment));
@@ -219,6 +253,18 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		jpForm.add(jbChooser);
 		jpForm.add(jbCalSteps);
 		jpForm.add(jSFieldsSazon);
+		
+		//Adição dos componentes no painel do arquivo de experimento
+		jpFileExperiment.add(jlFileExperiment);
+		jpFileExperiment.add(jtfExperimentFile);
+		jpFileExperiment.add(jbExperimentFile);
+		
+		//Adição dos componentes no painel do centro
+//		jpCenter.setBackground(Color.BLACK);
+		jpCenter.add(jpFileExperiment, BorderLayout.LINE_START);
+		jpCenter.add(jlOr);
+		jpCenter.add(js);
+		jpCenter.add(jpForm, BorderLayout.CENTER);
 
 		//Adição dos componentes no painel de botões
 		jpControl.add(jbExecute);
@@ -226,13 +272,13 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 
 		//Adição dos componentes no painel do título
 		jpMain.add(jpTitle, BorderLayout.NORTH);
-		jpMain.add(jpForm, BorderLayout.CENTER);
+		jpMain.add(jpCenter, BorderLayout.CENTER);
 		jpMain.add(jpControl, BorderLayout.SOUTH);
 
 		add(jpMain);
 
 		setTitle("JPAMeter - A tool for analyzing implementation of JPA");
-		setSize(550, 500);
+		setSize(550, 600);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		setMinimumSize(getSize());
@@ -258,6 +304,17 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 					File f = jfc.getSelectedFile();
 					jtfQFiles.setText(f.getAbsolutePath());
 					calculateNumberQueriesFile(f);
+				}
+			}
+		});
+		
+		jbExperimentFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int ret = jfc.showOpenDialog(ConfigurationExperimentGUI.this);
+				if(ret == JFileChooser.APPROVE_OPTION){
+					File f = jfc.getSelectedFile();
+					jtfExperimentFile.setText(f.getAbsolutePath());
 				}
 			}
 		});
@@ -514,5 +571,9 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		if(e==jtfSazon){
 			valSazon = ((Integer)jtfSazon.getValue()).intValue();
 		}
+	}
+	
+	public static void main(String args[]){
+		new ConfigurationExperimentGUI().execute();
 	}
 }
