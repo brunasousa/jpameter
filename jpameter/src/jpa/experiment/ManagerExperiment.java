@@ -35,7 +35,8 @@ public class ManagerExperiment extends Thread implements Observer{
 	}
 
 	public void getExperimentInformation(){
-		File experimentFile = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"experiment.xml");
+//		File experimentFile = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"experiment.xml");
+		File experimentFile = new File("experiment.xml");
 		SAXBuilder sb = new SAXBuilder();  
 		Document d = null;
 		try {
