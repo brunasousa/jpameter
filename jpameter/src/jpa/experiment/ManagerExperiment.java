@@ -1,5 +1,4 @@
 package jpa.experiment;
-import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -35,12 +34,10 @@ public class ManagerExperiment extends Thread implements Observer{
 	}
 
 	public void getExperimentInformation(){
-//		File experimentFile = new File(System.getProperty("user.home")+System.getProperty("file.separator")+"experiment.xml");
-		File experimentFile = new File("experiment.xml");
 		SAXBuilder sb = new SAXBuilder();  
 		Document d = null;
 		try {
-			d = sb.build(experimentFile);
+			d = sb.build(getClass().getResource("experiment.xml")); // Dessa forma o arquivo xml pode ser recuperado dentro do jar
 		} catch (JDOMException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
