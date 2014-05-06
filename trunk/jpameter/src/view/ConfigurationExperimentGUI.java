@@ -398,74 +398,107 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 			public void actionPerformed(ActionEvent e) {
 				boolean cont = true;
 				
-				if(!checkQueriesSazonFields()){
-					JOptionPane.showMessageDialog(null, "A soma interna de todos os campos de cada step, deve ser igual a 100%.");
-					cont=false;
-				}
-				if(!checkMandatoryFields()){
-					JOptionPane.showMessageDialog(null, "Os campos 'Time Experiment' e 'Nº Clients' devem ser maiores que zero.");
-					cont=false;
-				}
+				if(jtfExperimentFile.getText().equals("")){
 				
-				if(jtfQFiles.getText().equals("")){
-					JOptionPane.showMessageDialog(null, "Escolha um arquivo de consultas para prosseguir.");
-					cont=false;
-				}
-				
-				if(cont){
-					getRef().dispose();
-					int steps[] = null;
-					if(fieldsSazon!=null){
-						steps = new int[fieldsSazon.length];
+					if(!checkQueriesSazonFields()){
+						JOptionPane.showMessageDialog(null, "The sum of all step's fields must be equal to 100");
+						cont=false;
+					}
+					if(!checkMandatoryFields()){
+						JOptionPane.showMessageDialog(null, "The 'Time Experiment' field and 'Nº Clients' field must be more than zero.");
+						cont=false;
+					}
 					
-						for(int i=0; i<fieldsSazon.length;i++){
-							steps[i] = Integer.parseInt(fieldsSazon[i].getText());
-						}
+					if(jtfQFiles.getText().equals("")){
+						JOptionPane
+								.showMessageDialog(null,
+										"Choose a queries' file to proceed.");
+						cont = false;
 					}
-					ExperimentFile ef = new ExperimentFile();
-					if(ef.create(valStrategy, valNClients, steps, jtfQFiles.getText(), valTExperiment, valSazon)){
-						JOptionPane.showMessageDialog(null, "Roteiro do experimento gerado em "+System.getProperty("user.home"));
-						
-						Compiler c = new Compiler();
-						//Adicionado para testar criação do jar 
-						try {
-							String libsJPA = CompilerConstants.HIBERNATE;
-							
-							switch (valStrategy) {
-							case JPAConstants.JPA_ECLIPSELINK:
-								libsJPA = CompilerConstants.ECLIPSELINK;
-								break;
-							case JPAConstants.JPA_OPENJPA:
-								libsJPA = CompilerConstants.OPENJPA;
-								break;
+				}
+
+				if (cont) {
+					getRef().dispose();
+					Compiler c = new Compiler();
+
+					// Adicionar aqui uma validacao do xml, se ele for adiciondo
+					if (jtfExperimentFile.getText().equals("")) { //Se nenhum arquivo foi referenciado, um novo arquivo sera criado
+						int steps[] = null;
+						if (fieldsSazon != null) {
+							steps = new int[fieldsSazon.length];
+
+							for (int i = 0; i < fieldsSazon.length; i++) {
+								steps[i] = Integer.parseInt(fieldsSazon[i]
+										.getText());
 							}
-							
-							c.addDependencies(libsJPA);
-							c.addDependencies(CompilerConstants.COMMONS);
-							c.addMainClasses();
-							
-							FilesApplication fa = new FilesApplication();
-							fa.generatePersistenseFile(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR
-														+System.getProperty("file.separator")
-														+"META-INF"
-														+System.getProperty("file.separator"), valStrategy);
-							c.compileClasses();
-							c.generateJar(JPAConstants.JPA_STRATEGIES[valStrategy]);
-							
-							JOptionPane.showMessageDialog(null, "Jar do experimento gerado em "+CompilerConstants.DEFAULT_FOLDER);
-							c.removeFiles(CompilerConstants.DEFAULT_FOLDER);
-							getRef().dispose();
-							new HomeProjectView().execute();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						} 
-							catch (InterruptedException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
 						}
-						
+						ExperimentFile ef = new ExperimentFile();
+						if (ef.create(valStrategy, valNClients, steps, jtfQFiles.getText(), valTExperiment, valSazon)) {
+							JOptionPane.showMessageDialog(null,
+									"Roteiro do experimento gerado em "
+											+ System.getProperty("user.home"));
+						} else {
+							JOptionPane.showMessageDialog(null,
+									"Error when creating file!");
+							return;
+						}
+
+					} else {// Copia o arquivo referenciado pelo usuario para o path dos arquivos fontes do jar 
+						if (!c.copyExperimentFileToFilesJar(jtfExperimentFile.getText(), valStrategy)) {
+							JOptionPane.showMessageDialog(null,
+									"Error when referencing file!");
+							return;
+						}
+
 					}
+
+					try {
+						String libsJPA = CompilerConstants.HIBERNATE;
+
+						switch (valStrategy) {
+						case JPAConstants.JPA_ECLIPSELINK:
+							libsJPA = CompilerConstants.ECLIPSELINK;
+							break;
+						case JPAConstants.JPA_OPENJPA:
+							libsJPA = CompilerConstants.OPENJPA;
+							break;
+						}
+
+						c.addDependencies(libsJPA);
+						c.addDependencies(CompilerConstants.COMMONS);
+						c.addMainClasses();
+
+						FilesApplication fa = new FilesApplication();
+						
+						fa.generatePersistenseFile(
+								CompilerConstants.DEFAULT_FOLDER
+										+ CompilerConstants.FILES_JAR
+										+ System.getProperty("file.separator")
+										+ "META-INF"
+										+ System.getProperty("file.separator"),
+								valStrategy);
+						
+						c.compileClasses();
+						c.generateJar(JPAConstants.JPA_STRATEGIES[valStrategy]);
+
+						JOptionPane.showMessageDialog(null,
+								"Jar do experimento gerado em "
+										+ CompilerConstants.DEFAULT_FOLDER);
+						
+						c.removeFiles(CompilerConstants.DEFAULT_FOLDER);
+						
+						getRef().dispose();
+						
+						new HomeProjectView().execute();
+						
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
 				}
 			}
 			

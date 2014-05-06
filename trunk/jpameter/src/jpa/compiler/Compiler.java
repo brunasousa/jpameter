@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,6 +19,13 @@ import java.sql.SQLException;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 
 import jpa.JPAConstants;
 import jpa.dbmsdriver.DatabaseSystemDriver;
@@ -179,9 +187,40 @@ public class Compiler {
 		return reader;
 	}
 	
-	public boolean copyExperimentFileToFilesJar(String originPath){
+	public boolean copyExperimentFileToFilesJar(String originPath, int strategy){
 		String finalPath = CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR+separator+"experiment.xml";
-		return copyFileTo(originPath, finalPath);
+		return copyFileTo(originPath, finalPath) && modifyStrategyOfExperimetFile(strategy, finalPath);
+	}
+	
+	public boolean modifyStrategyOfExperimetFile(int strategy, String pathFile){
+		File experimentFile = new File(pathFile);
+		SAXBuilder sb = new SAXBuilder();  
+		Document d = null;
+		try {
+			d = sb.build(experimentFile);
+		} catch (JDOMException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}  
+		
+		Element jpameter = d.getRootElement();
+		Element jpaStrategy = jpameter.getChild("jpa-provider");
+		jpaStrategy.setText(JPAConstants.JPA_STRATEGIES[strategy]);
+		experimentFile.delete();
+		
+		Document d2 = new Document(jpameter.detach());
+		XMLOutputter xmlOut = new XMLOutputter();
+		xmlOut.setFormat(Format.getPrettyFormat());
+		try {
+			xmlOut.output(d2, new FileWriter(pathFile));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+		
 	}
 	
 	public boolean copyFileTo(String originPath, String finalPath){
