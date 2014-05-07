@@ -1,6 +1,7 @@
 package jpa.graph;
 
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 import org.jfree.chart.ChartPanel;
 
@@ -20,6 +21,10 @@ public class Chart {
 	}
 	public void setLegend(JScrollPane legend) {
 		this.legend = legend;
+	}
+	
+	public JTable getTable(){
+		return (JTable)legend.getViewport().getComponent(0);
 	}
 
 }

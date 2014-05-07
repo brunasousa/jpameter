@@ -82,7 +82,7 @@ public class GenereteComplexityChart {
 		
 		Chart c = new Chart();
 		c.setChart(cp);
-		c.setLegend(legendChart(400, 150, linesCharts));
+		c.setLegend(legendChart(400, 100, linesCharts));
 		return c;
 	}
 	
@@ -141,6 +141,7 @@ public class GenereteComplexityChart {
 		jt.getColumnModel().getColumn(0).setPreferredWidth(20);
 		jt.getColumnModel().getColumn(1).setPreferredWidth(5);
 		jt.getColumnModel().getColumn(2).setPreferredWidth(10);
+		jt.getColumnModel().getColumn(2).setPreferredWidth(300);
 		//jt.setEnabled(false);
 	
 		jcp.setViewportView(jt);
