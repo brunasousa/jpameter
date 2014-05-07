@@ -2,10 +2,12 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.ScrollPane;
 import java.io.File;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -46,15 +48,24 @@ public class JPAMeterView extends JFrame{
 		// Aba complexidade		
 		Chart charts[] = gc.genereteChartComplexity(); 
 		jpComplexidade.setSize(1000, 700);
-		jpComplexidade.add(charts[0].getChart());
-		jpComplexidade.add(charts[0].getLegend());
-		jpComplexidade.add(charts[1].getChart());
-		jpComplexidade.add(charts[1].getLegend());
-		jpComplexidade.add(charts[2].getChart());
-		jpComplexidade.add(charts[2].getLegend());
-		jpComplexidade.add(charts[3].getChart());
-		jpComplexidade.add(charts[3].getLegend());
+		jpComplexidade.setLayout(new GridLayout(0, 1));
 		
+		if(charts[0].getTable().getRowCount() != 0){
+			jpComplexidade.add(charts[0].getChart());
+			jpComplexidade.add(charts[0].getLegend());
+		}
+		if(charts[1].getTable().getRowCount() != 0){
+			jpComplexidade.add(charts[1].getChart());
+			jpComplexidade.add(charts[1].getLegend());
+		}
+		if(charts[2].getTable().getRowCount() != 0){
+			jpComplexidade.add(charts[2].getChart());
+			jpComplexidade.add(charts[2].getLegend());	
+		}
+		if(charts[3].getTable().getRowCount() != 0){
+			jpComplexidade.add(charts[3].getChart());
+			jpComplexidade.add(charts[3].getLegend());
+		}
 		//Aba tempo médio
 		jpTempMedio.add(gm.genereteMeanTimeChart());
 		
@@ -70,7 +81,7 @@ public class JPAMeterView extends JFrame{
 		this.add(jlOperacao);
 		this.setLayout(null);
 		this.setVisible(true);
-		this.setResizable(false);
+		//this.setResizable(false);
 		this.setBackground(Color.WHITE);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
