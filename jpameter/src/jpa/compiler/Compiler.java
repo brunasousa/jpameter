@@ -375,25 +375,4 @@ public class Compiler {
 		}
 		f.delete();
 	}
-	
-	public static void main(String args[]){
-//		try {
-//			Compiler c = new Compiler();
-//			c.addDependencies(CompilerConstants.HIBERNATE);
-//			c.addDependencies(CompilerConstants.COMMONS);
-//			FilesApplication fa = new FilesApplication();
-//			fa.generatePersistenseFile(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR+"/META-INF/", JPAConstants.JPA_HIBERNATE);
-//			c.compileClasses();
-//			c.generateJar();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (URISyntaxException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-	}
 }

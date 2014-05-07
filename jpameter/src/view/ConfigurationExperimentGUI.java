@@ -3,10 +3,10 @@ package view;
 import icons.IconUtils;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -17,9 +17,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -31,6 +31,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.ProgressMonitor;
+import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -63,6 +65,10 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 	}
 	
 	public JFrame getRef() {
+		return this;
+	}
+	
+	public PropertyChangeListener getRefChangeListener(){
 		return this;
 	}
 
@@ -101,9 +107,13 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 	private int valNClients = 1;
 	private int valSazon = 10;
 	
+	private ProgressMonitor progressMonitor;
+	private Task task;
+	private Compiler c;
+	
 	public void build() {
 		
-		//Instacia dos componentes de tela
+		//Instancia dos componentes de tela
 		JPanel jpMain = new JPanel(new BorderLayout());
 
 		JPanel jpTitle = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -419,7 +429,7 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 
 				if (cont) {
 					getRef().dispose();
-					Compiler c = new Compiler();
+					c = new Compiler();
 
 					// Adicionar aqui uma validacao do xml, se ele for adiciondo
 					if (jtfExperimentFile.getText().equals("")) { //Se nenhum arquivo foi referenciado, um novo arquivo sera criado
@@ -451,54 +461,13 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 						}
 
 					}
-
-					try {
-						String libsJPA = CompilerConstants.HIBERNATE;
-
-						switch (valStrategy) {
-						case JPAConstants.JPA_ECLIPSELINK:
-							libsJPA = CompilerConstants.ECLIPSELINK;
-							break;
-						case JPAConstants.JPA_OPENJPA:
-							libsJPA = CompilerConstants.OPENJPA;
-							break;
-						}
-
-						c.addDependencies(libsJPA);
-						c.addDependencies(CompilerConstants.COMMONS);
-						c.addMainClasses();
-
-						FilesApplication fa = new FilesApplication();
-						
-						fa.generatePersistenseFile(
-								CompilerConstants.DEFAULT_FOLDER
-										+ CompilerConstants.FILES_JAR
-										+ System.getProperty("file.separator")
-										+ "META-INF"
-										+ System.getProperty("file.separator"),
-								valStrategy);
-						
-						c.compileClasses();
-						c.generateJar(JPAConstants.JPA_STRATEGIES[valStrategy]);
-
-						JOptionPane.showMessageDialog(null,
-								"Jar do experimento gerado em "
-										+ CompilerConstants.DEFAULT_FOLDER);
-						
-						c.removeFiles(CompilerConstants.DEFAULT_FOLDER);
-						
-						getRef().dispose();
-						
-						new HomeProjectView().execute();
-						
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-
+					
+					progressMonitor = new ProgressMonitor(getRef(), "Building experiment", "", 0, 100);
+					progressMonitor.setProgress(0);
+					task = new Task();
+					task.addPropertyChangeListener(getRefChangeListener());
+					task.execute();
+					jbExecute.setEnabled(false);
 				}
 			}
 			
@@ -543,6 +512,7 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 				
 		return true;
 	}
+	
 	private void calculateNumberQueriesFile(File f){
 		SAXBuilder sb = new SAXBuilder();  
 		Document d = null;
@@ -606,7 +576,83 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 		}
 	}
 	
-	public static void main(String args[]){
-		new ConfigurationExperimentGUI().execute();
-	}
+	class Task extends SwingWorker<Void, Void> {
+        @Override
+        public Void doInBackground() {
+            setProgress(0);
+            progressMonitor.setNote("Adding dependencies...");
+            
+			try {
+				String libsJPA = CompilerConstants.HIBERNATE;
+				
+				switch (valStrategy) {
+				case JPAConstants.JPA_ECLIPSELINK:
+					libsJPA = CompilerConstants.ECLIPSELINK;
+					break;
+				case JPAConstants.JPA_OPENJPA:
+					libsJPA = CompilerConstants.OPENJPA;
+					break;
+				}
+				
+				c.addDependencies(libsJPA);
+				progressMonitor.setProgress(10);
+				c.addDependencies(CompilerConstants.COMMONS);
+				progressMonitor.setProgress(20);
+				c.addMainClasses();
+				progressMonitor.setProgress(30);
+
+				FilesApplication fa = new FilesApplication();
+				
+				fa.generatePersistenseFile(
+						CompilerConstants.DEFAULT_FOLDER
+								+ CompilerConstants.FILES_JAR
+								+ System.getProperty("file.separator")
+								+ "META-INF"
+								+ System.getProperty("file.separator"),
+						valStrategy);
+			
+				progressMonitor.setProgress(40);
+				progressMonitor.setNote("Compiling classes...");
+				
+				c.compileClasses();
+				
+				progressMonitor.setProgress(60);
+				progressMonitor.setNote("Generating jar...");
+				
+				c.generateJar(JPAConstants.JPA_STRATEGIES[valStrategy]);
+				
+				progressMonitor.setProgress(90);
+				progressMonitor.setNote("Removing source files...");
+				
+				c.removeFiles(CompilerConstants.DEFAULT_FOLDER);
+				
+				progressMonitor.setProgress(100);
+				progressMonitor.close();
+
+				JOptionPane.showMessageDialog(null,
+				"Jar do experimento gerado em "
+						+ CompilerConstants.DEFAULT_FOLDER);
+				
+				getRef().dispose();
+				new HomeProjectView().execute();
+			
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+            return null;
+        }
+ 
+        @Override
+        public void done() {
+            Toolkit.getDefaultToolkit().beep();
+            jbExecute.setEnabled(true);
+//            startButton.setEnabled(true);
+//            progressMonitor.setProgress(0);
+        }
+    }
 }
