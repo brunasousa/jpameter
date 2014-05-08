@@ -4,10 +4,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.ScrollPane;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,9 +22,9 @@ import javax.swing.table.DefaultTableModel;
 
 import jpa.graph.Chart;
 import jpa.graph.GenereteComplexityChart;
-import jpa.graph.GenereteMeanTimeChart;
+import jpa.graph.GenereteAverageTimeChart;
 
-public class JPAMeterView extends JFrame{
+public class JPAMeterView extends JFrame implements ActionListener{
 
 	private JLabel jlOperacao;
 	private JTabbedPane jtAbas;
@@ -29,13 +32,20 @@ public class JPAMeterView extends JFrame{
 	private JPanel jpTempMedio;
 	private JPanel jpDesempnho;
 	private GenereteComplexityChart gc;
-	private GenereteMeanTimeChart gm;
+	private GenereteAverageTimeChart gm;
+	
+	private JButton jbDetailsSelect;
+	private JButton jbDetailsUpdate;
+	private JButton jbDetailsInsert;
+	private JButton jbDetailsDelete;
+	
+	private Chart[] charts;
+	private Chart averageChart;
 
 	public JPAMeterView(File[] files) {
 		gc = new GenereteComplexityChart(files);
-		gm = new GenereteMeanTimeChart(files);
+		gm = new GenereteAverageTimeChart(files);
 	}
-
 	private void build() {
 
 		jlOperacao = new JLabel("<html><h3>Resultados: </h3></html>");
@@ -45,35 +55,52 @@ public class JPAMeterView extends JFrame{
 		jpTempMedio = new JPanel();
 		jpDesempnho = new JPanel();
 		
+		jbDetailsSelect = new JButton("Show Details");
+		jbDetailsUpdate = new JButton("Show Details");
+		jbDetailsInsert = new JButton("Show Details");
+		jbDetailsDelete = new JButton("Show Details");
+		
+		jbDetailsDelete.setSize(100, 30);
+		jbDetailsUpdate.setSize(100, 30);
+		jbDetailsInsert.setSize(100, 30);
+		jbDetailsSelect.setSize(100, 30);
+		
 		// Aba complexidade		
-		Chart charts[] = gc.genereteChartComplexity(); 
+		charts = gc.genereteChartComplexity(); 
 		jpComplexidade.setSize(1000, 700);
-		jpComplexidade.setLayout(new GridLayout(0, 1));
 		
 		if(charts[0].getTable().getRowCount() != 0){
 			jpComplexidade.add(charts[0].getChart());
-			jpComplexidade.add(charts[0].getLegend());
+			jpComplexidade.add(jbDetailsSelect);
 		}
 		if(charts[1].getTable().getRowCount() != 0){
 			jpComplexidade.add(charts[1].getChart());
-			jpComplexidade.add(charts[1].getLegend());
+			jpComplexidade.add(jbDetailsInsert);
 		}
 		if(charts[2].getTable().getRowCount() != 0){
 			jpComplexidade.add(charts[2].getChart());
-			jpComplexidade.add(charts[2].getLegend());	
+			jpComplexidade.add(jbDetailsUpdate);
 		}
 		if(charts[3].getTable().getRowCount() != 0){
 			jpComplexidade.add(charts[3].getChart());
-			jpComplexidade.add(charts[3].getLegend());
+			jpComplexidade.add(jbDetailsDelete);
 		}
 		//Aba tempo médio
-		jpTempMedio.add(gm.genereteMeanTimeChart());
+		averageChart = gm.genereteMeanTimeChart();
+		jpTempMedio.add(averageChart.getChart());
+		jpTempMedio.add(averageChart.getLegend());
 		
 		jtAbas = new JTabbedPane();
 		jtAbas.setBounds(0, 30, 1000, 850);
-		jtAbas.add(jpComplexidade, "Complexidade");
-		jtAbas.add(jpTempMedio, "Tempo Médio");
-		jtAbas.add(jpDesempnho, "Desempenho");
+		jtAbas.add(jpComplexidade, "Complexity");
+		jtAbas.add(jpTempMedio, "Average Time");
+		jtAbas.add(jpDesempnho, "Performance");
+		
+		//configuracoes dos botoes
+		jbDetailsDelete.addActionListener(this);
+		jbDetailsUpdate.addActionListener(this);
+		jbDetailsInsert.addActionListener(this);
+		jbDetailsSelect.addActionListener(this);
 		
 		// Configuracoes do Jframe ======================================================
 		this.setSize(1000, 850);
@@ -112,6 +139,24 @@ public class JPAMeterView extends JFrame{
 	public void execute() {
 		build();
 		setVisible(true);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		JButton jb = (JButton)e.getSource();
+		
+		if(jb == jbDetailsSelect)
+			new ShowDetailsGUI(charts[0].cloneSerializable()).execute();
+		
+		if(jb == jbDetailsInsert)
+			new ShowDetailsGUI(charts[1].cloneSerializable()).execute();
+		
+		if(jb == jbDetailsUpdate)
+			new ShowDetailsGUI(charts[2].cloneSerializable()).execute();
+		
+		if(jb == jbDetailsDelete)
+			new ShowDetailsGUI(charts[3].cloneSerializable()).execute();
+		
 	}
 
 }
