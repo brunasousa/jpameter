@@ -53,7 +53,7 @@ public class GenereteComplexityChart {
 	
 	private Chart generateChartPanelComplexity(String typeQuery){
 		List<String> linesCharts = new ArrayList<String>();
-		JTable jt = new JTable(new DefaultTableModel(new Object[][]{},new String[]{"Arquivo, Numero, Query, Registros Afetados"}));
+		JTable jt = new JTable(new DefaultTableModel(new Object[][]{},new String[]{"File, Bar, Query, Affected Lines"}));
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		int numberFile = 1;
 		for(File f : files){
@@ -63,7 +63,7 @@ public class GenereteComplexityChart {
 					for(int i=1;i<=bar4File;i++){
 						if(lines[i-1]!=null){
 							String vals[] = lines[i-1].split("\\|");
-							linesCharts.add(lines[i-1]+"|"+f.getName()+"|"+String.valueOf(i));
+							linesCharts.add(lines[i-1]+"|"+f.getName()+"|"+getNumberWithColor(i));
 							dataset.setValue(Long.parseLong(vals[2]), String.valueOf(i), f.getName());
 						}
 					}
@@ -71,18 +71,18 @@ public class GenereteComplexityChart {
 			numberFile++;
 		}
 		
-		JFreeChart jfc = ChartFactory.createBarChart("Complexidade "+typeQuery,"Arquivos", "Tempo(ms)", dataset, 
+		JFreeChart jfc = ChartFactory.createBarChart("Complexity "+typeQuery,"Files", "Time(ms)", dataset, 
 				  											PlotOrientation.VERTICAL, false,true, true);
 		jfc.setBackgroundPaint(Color.WHITE);
 		jfc.getTitle().setPaint(Color.BLACK); 
 		CategoryPlot p = jfc.getCategoryPlot(); 
 		p.setRangeGridlinePaint(Color.red); 
 		ChartPanel cp = new ChartPanel(jfc);
-		cp.setPreferredSize(new Dimension(550,190));
+		cp.setPreferredSize(new Dimension(900,200));
 		
 		Chart c = new Chart();
 		c.setChart(cp);
-		c.setLegend(legendChart(400, 100, linesCharts));
+		c.setLegend(legendChart(900, 165, linesCharts));
 		return c;
 	}
 	
@@ -130,18 +130,19 @@ public class GenereteComplexityChart {
 	
 	private JScrollPane legendChart(int width, int height, List<String> rows){
 		JScrollPane jcp = new JScrollPane();
-		DefaultTableModel dtm = new DefaultTableModel(new Object[][]{}, new String[]{"Arquivo","Num","Registros","Consulta"});
+		DefaultTableModel dtm = new DefaultTableModel(new Object[][]{}, new String[]{"File","Bar","Time(ms)","Rows","Query"});
 		JTable jt = new JTable();
 		jt.setModel(dtm);
 		
 		for(String s:rows){
 			String[] vals = s.split("\\|");
-			dtm.addRow(new String[]{vals[6],vals[7],vals[5],vals[4]});
+			dtm.addRow(new String[]{vals[6],vals[7],vals[2],vals[5],vals[4]});
 		} 
-		jt.getColumnModel().getColumn(0).setPreferredWidth(20);
-		jt.getColumnModel().getColumn(1).setPreferredWidth(5);
-		jt.getColumnModel().getColumn(2).setPreferredWidth(10);
-		jt.getColumnModel().getColumn(2).setPreferredWidth(300);
+		jt.getColumnModel().getColumn(0).setPreferredWidth(100);
+		jt.getColumnModel().getColumn(1).setPreferredWidth(20);
+		jt.getColumnModel().getColumn(2).setPreferredWidth(50);
+		jt.getColumnModel().getColumn(3).setPreferredWidth(50);
+		jt.getColumnModel().getColumn(4).setPreferredWidth(500);
 		//jt.setEnabled(false);
 	
 		jcp.setViewportView(jt);
@@ -149,5 +150,26 @@ public class GenereteComplexityChart {
 		jcp.setBackground(Color.WHITE);
 		jcp.createHorizontalScrollBar();
 		return jcp;
+	}
+	
+	private String getNumberWithColor(int number){
+		switch (number) {
+		case 1:
+			return "<html><font color='red'>1</font></html>";
+
+		case 2:
+			return "<html><font color='blue'>2</font></html>";
+		
+		case 3:
+			return "<html><font color='green'>3</font></html>";
+			
+		case 4:
+			return "<html><font color='yellow'>4</font></html>";
+		
+		case 5:
+			return "<html><font color='pink'>5</font></html>";
+	
+		}
+		return null;
 	}
 }
