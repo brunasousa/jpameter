@@ -78,11 +78,11 @@ public class GenereteComplexityChart {
 		CategoryPlot p = jfc.getCategoryPlot(); 
 		p.setRangeGridlinePaint(Color.red); 
 		ChartPanel cp = new ChartPanel(jfc);
-		cp.setPreferredSize(new Dimension(900,200));
+		cp.setPreferredSize(new Dimension(850,200));
 		
 		Chart c = new Chart();
 		c.setChart(cp);
-		c.setLegend(legendChart(900, 165, linesCharts));
+		c.setLegend(legendChart(875, 165, linesCharts));
 		return c;
 	}
 	
