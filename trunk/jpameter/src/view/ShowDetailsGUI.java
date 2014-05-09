@@ -46,16 +46,16 @@ public class ShowDetailsGUI extends JFrame{
 		jpLegend = new JPanel();
 		
 		// Panel complexidade		
-		jpComplexidade.setSize(900, 350);
-		jpComplexidade.setLocation(0, 0);
+		jpComplexidade.setSize(880, 350);
+		jpComplexidade.setLocation(10, 0);
 		chart.getChart().setMaximumSize(new Dimension(700, 300));
 		chart.getLegend().setMaximumSize(new Dimension(700, 200));
 	
 		jpComplexidade.add(jlOperacao, BorderLayout.PAGE_START);
 		jpComplexidade.add(chart.getChart(), BorderLayout.CENTER);
 		
-		jpLegend.setLocation(0, 352);
-		jpLegend.setSize(900, 150);
+		jpLegend.setLocation(10, 352);
+		jpLegend.setSize(880, 150);
 		jpLegend.add(chart.getLegend());
 		
 		

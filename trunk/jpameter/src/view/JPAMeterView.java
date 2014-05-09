@@ -23,6 +23,7 @@ import javax.swing.table.DefaultTableModel;
 import jpa.graph.Chart;
 import jpa.graph.GenereteComplexityChart;
 import jpa.graph.GenereteAverageTimeChart;
+import jpa.graph.GeneretePerformance;
 
 public class JPAMeterView extends JFrame implements ActionListener{
 
@@ -33,6 +34,7 @@ public class JPAMeterView extends JFrame implements ActionListener{
 	private JPanel jpDesempnho;
 	private GenereteComplexityChart gc;
 	private GenereteAverageTimeChart gm;
+	private GeneretePerformance gp;
 	
 	private JButton jbDetailsSelect;
 	private JButton jbDetailsUpdate;
@@ -41,10 +43,14 @@ public class JPAMeterView extends JFrame implements ActionListener{
 	
 	private Chart[] charts;
 	private Chart averageChart;
+	private int sizeFrame;
+	private File[] files;
 
 	public JPAMeterView(File[] files) {
 		gc = new GenereteComplexityChart(files);
 		gm = new GenereteAverageTimeChart(files);
+		gp = new GeneretePerformance();
+		this.files = files;
 	}
 	private void build() {
 
@@ -55,15 +61,15 @@ public class JPAMeterView extends JFrame implements ActionListener{
 		jpTempMedio = new JPanel();
 		jpDesempnho = new JPanel();
 		
-		jbDetailsSelect = new JButton("Show Details");
-		jbDetailsUpdate = new JButton("Show Details");
-		jbDetailsInsert = new JButton("Show Details");
-		jbDetailsDelete = new JButton("Show Details");
+		jbDetailsSelect = new JButton("Details");
+		jbDetailsUpdate = new JButton("Details");
+		jbDetailsInsert = new JButton("Details");
+		jbDetailsDelete = new JButton("Details");
 		
-		jbDetailsDelete.setSize(100, 30);
-		jbDetailsUpdate.setSize(100, 30);
-		jbDetailsInsert.setSize(100, 30);
-		jbDetailsSelect.setSize(100, 30);
+		jbDetailsDelete.setPreferredSize(new Dimension(100, 100));
+		jbDetailsUpdate.setPreferredSize(new Dimension(100, 100));
+		jbDetailsInsert.setPreferredSize(new Dimension(100, 100));
+		jbDetailsSelect.setPreferredSize(new Dimension(100, 100));
 		
 		// Aba complexidade		
 		charts = gc.genereteChartComplexity(); 
@@ -72,19 +78,30 @@ public class JPAMeterView extends JFrame implements ActionListener{
 		if(charts[0].getTable().getRowCount() != 0){
 			jpComplexidade.add(charts[0].getChart());
 			jpComplexidade.add(jbDetailsSelect);
+			sizeFrame++;
 		}
 		if(charts[1].getTable().getRowCount() != 0){
 			jpComplexidade.add(charts[1].getChart());
 			jpComplexidade.add(jbDetailsInsert);
+			sizeFrame++;
 		}
 		if(charts[2].getTable().getRowCount() != 0){
 			jpComplexidade.add(charts[2].getChart());
 			jpComplexidade.add(jbDetailsUpdate);
+			sizeFrame++;
 		}
 		if(charts[3].getTable().getRowCount() != 0){
 			jpComplexidade.add(charts[3].getChart());
 			jpComplexidade.add(jbDetailsDelete);
+			sizeFrame++;
 		}
+
+		//configuracoes dos botoes
+		jbDetailsDelete.addActionListener(this);
+		jbDetailsUpdate.addActionListener(this);
+		jbDetailsInsert.addActionListener(this);
+		jbDetailsSelect.addActionListener(this);
+		
 		//Aba tempo médio
 		averageChart = gm.genereteMeanTimeChart();
 		jpTempMedio.add(averageChart.getChart());
@@ -96,14 +113,24 @@ public class JPAMeterView extends JFrame implements ActionListener{
 		jtAbas.add(jpTempMedio, "Average Time");
 		jtAbas.add(jpDesempnho, "Performance");
 		
-		//configuracoes dos botoes
-		jbDetailsDelete.addActionListener(this);
-		jbDetailsUpdate.addActionListener(this);
-		jbDetailsInsert.addActionListener(this);
-		jbDetailsSelect.addActionListener(this);
+		//Aba tempo performance
+		
+		for (File file : files) {
+			if(file != null){
+				JLabel jl = new JLabel(file.getName());
+				jl.setSize(100, 30);
+				jpDesempnho.add(jl);
+				jpDesempnho.add(gp.generetePerformanceTables(file));
+			}
+		}
 		
 		// Configuracoes do Jframe ======================================================
-		this.setSize(1000, 850);
+		
+		if(sizeFrame>2)
+			this.setSize(1000, 850);
+		else
+			this.setSize(1000, 600);
+		
 		this.add(jtAbas);
 		this.add(jlOperacao);
 		this.setLayout(null);
@@ -113,27 +140,6 @@ public class JPAMeterView extends JFrame implements ActionListener{
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-	}
-	
-	private JScrollPane legendChart(int width, int height, List<String> rows){
-		JScrollPane jcp = new JScrollPane();
-		DefaultTableModel dtm = new DefaultTableModel(new Object[][]{}, new String[]{"Arquivo","Num","Registros","Consulta"});
-		JTable jt = new JTable();
-		jt.setModel(dtm);
-		
-		for(String s:rows){
-			String[] vals = s.split("\\|");
-			dtm.addRow(new String[]{vals[6],vals[7],vals[5],vals[2]});
-		} 
-		jt.getColumnModel().getColumn(0).setPreferredWidth(20);
-		jt.getColumnModel().getColumn(1).setPreferredWidth(5);
-		jt.getColumnModel().getColumn(2).setPreferredWidth(10);
-		
-	
-		jcp.setViewportView(jt);
-		jcp.setPreferredSize(new Dimension(width, height));
-		jcp.createHorizontalScrollBar();
-		return jcp;
 	}
 	
 	public void execute() {
