@@ -444,9 +444,13 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 						}
 						ExperimentFile ef = new ExperimentFile();
 						if (ef.create(valStrategy, valNClients, steps, jtfQFiles.getText(), valTExperiment, valSazon)) {
+							if (!c.copyExperimentFileToFilesJar(System.getProperty("user.home")+System.getProperty("file.separator")+"experiment.xml" , valStrategy)) {
+								JOptionPane.showMessageDialog(null,
+										"Error when referencing file!");
+								return;
+							}
 							JOptionPane.showMessageDialog(null,
-									"Roteiro do experimento gerado em "
-											+ System.getProperty("user.home"));
+									"Roteiro do experimento gerado!");
 						} else {
 							JOptionPane.showMessageDialog(null,
 									"Error when creating file!");
@@ -615,6 +619,7 @@ public class ConfigurationExperimentGUI extends JFrame implements PropertyChange
 				progressMonitor.setNote("Compiling classes...");
 				
 				c.compileClasses();
+				
 				
 				progressMonitor.setProgress(60);
 				progressMonitor.setNote("Generating jar...");

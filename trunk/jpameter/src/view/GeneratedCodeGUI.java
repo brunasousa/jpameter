@@ -165,6 +165,7 @@ public class GeneratedCodeGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				getRef().dispose();
+				/* retirado, nao utilizado nos experimentos no momento
 				Compiler c = new Compiler();
 				for(int i=0;i<entityContent.size();i++){//Salva as classes no diretorio especificado em CompilerConstants
 					if(!c.saveClass(entityContent.get(i).getText())){
@@ -180,7 +181,7 @@ public class GeneratedCodeGUI extends JFrame {
 						return;
 					}
 				}
-				
+				*/
 				JOptionPane.showMessageDialog(getRef(), "Classes geradas com sucesso!",
 						"JPAMeter", JOptionPane.INFORMATION_MESSAGE);
 				ConfigurationExperimentGUI ce = new ConfigurationExperimentGUI(jpaStrategy);

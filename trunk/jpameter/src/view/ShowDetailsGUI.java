@@ -55,7 +55,7 @@ public class ShowDetailsGUI extends JFrame{
 		jpComplexidade.add(chart.getChart(), BorderLayout.CENTER);
 		
 		jpLegend.setLocation(10, 352);
-		jpLegend.setSize(880, 150);
+		jpLegend.setSize(880, 170);
 		jpLegend.add(chart.getLegend());
 		
 		

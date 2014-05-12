@@ -101,6 +101,8 @@ public class ManagerExperiment extends Thread implements Observer{
 				}
 			}
 		}
+		
+		QueryThread.factory.close();// OpenJPA so fecha as conexoes se o ManagerFactory for fechado tambem
 	}
 	
 	@Override
