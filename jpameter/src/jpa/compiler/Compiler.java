@@ -35,6 +35,7 @@ public class Compiler {
 
 	public Compiler(){
 		createFolder(CompilerConstants.DEFAULT_FOLDER);
+		createFolder(CompilerConstants.DEFAULT_FOLDER+CompilerConstants.FILES_JAR);
 	}
 	
 	String separator = System.getProperty("file.separator");

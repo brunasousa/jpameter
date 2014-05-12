@@ -18,7 +18,7 @@ public class FilesApplication {
 		file+= "  xsi:schemaLocation='http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd'\n";
 		file+= "  version='2.0' xmlns='http://java.sun.com/xml/ns/persistence'>\n";
 		file+= "<persistence-unit name='jpameter' transaction-type='RESOURCE_LOCAL'>\n";
-		file+= persistenceClass();
+		//file+= persistenceClass();
 		switch (jpaStrategy) {
 			case JPAConstants.JPA_HIBERNATE:
 				file+=propertiesHibernate();
@@ -77,7 +77,8 @@ public class FilesApplication {
 		properties+= "    <property name='openjpa.ConnectionURL'  value='jdbc:mysql://"+ConectionData.HOST+":"+ConectionData.PORT+"/"+ConectionData.SCHEMA+"' />\n";
 		properties+= "    <property name='openjpa.ConnectionUserName' value='"+ConectionData.USER+"' />\n";
 		properties+= "    <property name='openjpa.ConnectionPassword' value='"+ConectionData.PASS+"' />\n";
-		properties+= "    <property name='openjpa.RuntimeUnenhancedClasses' value='supported' />\n";
+		//properties+= "    <property name='openjpa.RuntimeUnenhancedClasses' value='supported' />\n";
+		properties+= "    <property name='openjpa.DynamicEnhancementAgent' value='false' />\n"; // Dava erro ao utilizar o Enhancing Dynamically #http://comments.gmane.org/gmane.comp.apache.openjpa.user/10303 
 		properties+= "  </properties>\n";
 		
 		return properties;

@@ -32,6 +32,8 @@ public class QueryThread extends Observable implements Runnable{
 	private static final String PERSISTENCE_UNIT_NAME = "jpameter";
 	private String fileResult;
 	
+	static EntityManagerFactory factory; 
+	
 	public QueryThread(String queryFile, long timeExec, String type, String fileResult){
 		this.queryFile = queryFile;
 		this.timeExec = timeExec;
@@ -51,6 +53,8 @@ public class QueryThread extends Observable implements Runnable{
 
 	@Override
 	public void run() {
+		if(QueryThread.factory == null)
+			factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
 		
 		long fullTime = 0;
 		
@@ -73,7 +77,7 @@ public class QueryThread extends Observable implements Runnable{
 			//Gravar dados de execucao em arquivo
 			writeInFile(result);
 		}
-		
+		//factory.close(); // OpenJPA so fecha as conexoes se o ManagerFactory for fechado tambem
 		setExecuting(false);
 	}
 	
@@ -81,10 +85,7 @@ public class QueryThread extends Observable implements Runnable{
 		Query q = null;
 		int rows;
 		List pojoList = null;
-		
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
 		EntityManager em = factory.createEntityManager();
-		
 		try{
 			em.getTransaction().begin();
 			q = em.createNativeQuery(sql);
@@ -100,7 +101,6 @@ public class QueryThread extends Observable implements Runnable{
 			em.getTransaction().commit();
 		}finally{
 			em.close();
-			factory.close(); // OpenJPA so fecha as conexoes se o ManagerFactory for fechado tambem
 		}
 		
 		return rows;

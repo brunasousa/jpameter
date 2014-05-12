@@ -136,6 +136,7 @@ public class HomeProjectView extends JFrame {
 		build();
 		events();
 		setVisible(true);
+		System.gc();
 	}
 	
 	public static void main(String args[]){
