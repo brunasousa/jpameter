@@ -76,7 +76,8 @@ public class GeneretePerformance {
 						time += Long.parseLong(vals[2]);
 						rowsAfeccted += Long.parseLong(vals[5]);
 					}
-				}	
+				}
+				br.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e) {
