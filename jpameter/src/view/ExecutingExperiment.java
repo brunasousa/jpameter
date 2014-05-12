@@ -184,6 +184,7 @@ public class ExecutingExperiment extends JFrame implements Runnable{
 	
     public void run() {
     	jbExecute.setEnabled(false);
+    	jbExit.setEnabled(false);
     	jpForm.add(jcp);
     	setSize(550, 400);
     	this.validate();
@@ -200,13 +201,15 @@ public class ExecutingExperiment extends JFrame implements Runnable{
 				System.out.println(line);
 				line = reader.readLine();
 			}
+			reader.close();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		c = null;
 		jtaConsole.append("\n\n\n\n** Fim do Experimento **\n\n\n\n");
 		jtaConsole.setCaretPosition(jtaConsole.getDocument().getLength()-1);
         validate();
+        jbExit.setEnabled(true);
         jbExecute.setEnabled(true);
     }
 }

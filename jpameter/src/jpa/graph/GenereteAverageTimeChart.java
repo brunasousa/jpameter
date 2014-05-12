@@ -86,6 +86,7 @@ public class GenereteAverageTimeChart {
 						lines++;
 					}
 				}
+				br.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

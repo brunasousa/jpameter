@@ -111,7 +111,8 @@ public class GenereteComplexityChart {
 							}
 						}
 					}
-				}	
+				}
+				br.close();
 				if(val1!=0){
 					val2 = val1;
 					val1 = 0;
