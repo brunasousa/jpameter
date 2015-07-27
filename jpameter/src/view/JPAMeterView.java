@@ -2,28 +2,25 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 
 import jpa.graph.Chart;
-import jpa.graph.GenereteComplexityChart;
 import jpa.graph.GenereteAverageTimeChart;
+import jpa.graph.GenereteComplexityChart;
+import jpa.graph.GenereteComplexityChart2;
 import jpa.graph.GeneretePerformance;
+import jpa.results.QueryFile;
+import jpa.results.Results;
 
 public class JPAMeterView extends JFrame implements ActionListener{
 
@@ -32,7 +29,7 @@ public class JPAMeterView extends JFrame implements ActionListener{
 	private JPanel jpComplexidade;
 	private JPanel jpTempMedio;
 	private JPanel jpDesempnho;
-	private GenereteComplexityChart gc;
+	private GenereteComplexityChart2 gc;
 	private GenereteAverageTimeChart gm;
 	private GeneretePerformance gp;
 	
@@ -45,11 +42,19 @@ public class JPAMeterView extends JFrame implements ActionListener{
 	private Chart averageChart;
 	private int sizeFrame;
 	private File[] files;
+	
+	private Results results;
+	private HashMap<File, List<QueryFile>> results4File;
 
 	public JPAMeterView(File[] files) {
-		gc = new GenereteComplexityChart(files);
+		
+		results = new Results(files);
+		results4File = results.getResults();
+		
+		gc = new GenereteComplexityChart2(results4File);
 		gm = new GenereteAverageTimeChart(files);
 		gp = new GeneretePerformance();
+		
 		this.files = files;
 	}
 	private void build() {
@@ -72,7 +77,7 @@ public class JPAMeterView extends JFrame implements ActionListener{
 		jbDetailsSelect.setPreferredSize(new Dimension(100, 100));
 		
 		// Aba complexidade		
-		charts = gc.genereteChartComplexity(); 
+		charts = gc.generate(); 
 		jpComplexidade.setSize(1000, 700);
 		
 		if(charts[0].getTable().getRowCount() != 0){
@@ -103,26 +108,26 @@ public class JPAMeterView extends JFrame implements ActionListener{
 		jbDetailsSelect.addActionListener(this);
 		
 		//Aba tempo médio
-		averageChart = gm.genereteMeanTimeChart();
-		jpTempMedio.add(averageChart.getChart());
-		jpTempMedio.add(averageChart.getLegend());
-		
+//		averageChart = gm.genereteMeanTimeChart();
+//		jpTempMedio.add(averageChart.getChart());
+//		jpTempMedio.add(averageChart.getLegend());
+//		
 		jtAbas = new JTabbedPane();
 		jtAbas.setBounds(0, 30, 1000, 850);
 		jtAbas.add(jpComplexidade, "Complexity");
-		jtAbas.add(jpTempMedio, "Average Time");
-		jtAbas.add(jpDesempnho, "Performance");
+//		jtAbas.add(jpTempMedio, "Average Time");
+//		jtAbas.add(jpDesempnho, "Performance");
 		
 		//Aba tempo performance
 		
-		for (File file : files) {
-			if(file != null){
-				JLabel jl = new JLabel(file.getName());
-				jl.setSize(100, 30);
-				jpDesempnho.add(jl);
-				jpDesempnho.add(gp.generetePerformanceTables(file));
-			}
-		}
+//		for (File file : files) {
+//			if(file != null){
+//				JLabel jl = new JLabel(file.getName());
+//				jl.setSize(100, 30);
+//				jpDesempnho.add(jl);
+//				jpDesempnho.add(gp.generetePerformanceTables(file));
+//			}
+//		}
 		
 		// Configuracoes do Jframe ======================================================
 		
