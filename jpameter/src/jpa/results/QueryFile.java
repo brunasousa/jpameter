@@ -5,10 +5,10 @@ import java.util.TreeMap;
 public class QueryFile {
 	
 	private TreeMap<Long, String> complexityQueries;
-	private long averageTime;
 	private long rowsAfeccted;
 	private long totalTime;
 	private int queryType;
+	private int numTotalQueries;
 	private String fileName;
 	
 	public QueryFile(int queryType) {
@@ -23,10 +23,10 @@ public class QueryFile {
 		this.complexityQueries = complexityQueries;
 	}
 	public long getAverageTime() {
-		return averageTime;
-	}
-	public void setAverageTime(long averageTime) {
-		this.averageTime = averageTime;
+		if(getTotalTime() == 0 || getNumTotalQueries() == 0)
+			return 0;
+		
+		return getTotalTime()/getNumTotalQueries();
 	}
 	public long getRowsAfeccted() {
 		return rowsAfeccted;
@@ -51,5 +51,13 @@ public class QueryFile {
 	}
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public int getNumTotalQueries() {
+		return numTotalQueries;
+	}
+
+	public void setNumTotalQueries(int numTotalQueries) {
+		this.numTotalQueries = numTotalQueries;
 	}
 }

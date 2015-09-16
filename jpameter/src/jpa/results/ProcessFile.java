@@ -22,6 +22,10 @@ public class ProcessFile {
 	
 	public static List <QueryFile> process(File f){
 		initQueryFiles();
+		
+		if(f == null)
+			return null;
+		
 		try {
 			FileInputStream fIU = new FileInputStream(f);
 			Scanner sc = new Scanner(fIU);
