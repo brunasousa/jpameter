@@ -15,7 +15,6 @@ import javax.swing.table.DefaultTableModel;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import jpa.results.QueryFile;
-import jpa.results.QueryType;
 
 public class ComplexityChart extends ChartAbstract{
 	
