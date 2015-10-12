@@ -53,18 +53,4 @@ public class ProcessFile {
 		return null;
 	}
 	
-	public static void main(String[] args){
-//		
-//		File f = new File("/home/chico/JM_ECLIPSELINK_1436584904861.txt");
-//		ProcessFile pf = new ProcessFile();
-//		pf.process(f);
-//		
-//		for (Map.Entry<Integer, QueryFile> map : pf.getQueryFiles().entrySet()) {
-//			System.out.println(map.getValue().getQueryType());
-//			for (Map.Entry<Long, String> query : map.getValue().getComplexityQueries().entrySet()) {
-//				System.out.println(query.getKey()+" - "+query.getValue());
-//			}
-//			System.out.println("----------------------------------------------------------");
-//		}
-	}
 }

@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +23,7 @@ import jpa.graph.ChartsFactory;
 import jpa.results.QueryFile;
 import jpa.results.Results;
 
-public class JPAMeterView extends JFrame implements ActionListener{
+public class JPAMeterView extends JFrame implements ActionListener, PropertyChangeListener{
 
 	private JLabel jlOperacao;
 	private JTabbedPane jtAbas;
@@ -38,13 +40,10 @@ public class JPAMeterView extends JFrame implements ActionListener{
 	private Chart averageChart;
 	private int sizeFrame;
 	
-	private Results results;
 	private HashMap<File, List<QueryFile>> results4File;
 
-	public JPAMeterView(File[] files) {
-		
-		results = new Results(files);
-		results4File = results.getResults();
+	public JPAMeterView(HashMap<File, List<QueryFile>> results4File) {
+		this.results4File = results4File;
 		
 	}
 	private void build() {
@@ -157,6 +156,11 @@ public class JPAMeterView extends JFrame implements ActionListener{
 		
 		if(jb == jbDetailsDelete)
 			new ShowDetailsGUI(charts[3].cloneSerializable()).execute();
+		
+	}
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Auto-generated method stub
 		
 	}
 

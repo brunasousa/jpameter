@@ -12,6 +12,7 @@ import javax.swing.JTable;
 
 import org.jfree.chart.ChartPanel;
 
+@SuppressWarnings("serial")
 public class Chart implements Cloneable, Serializable{
 	
 	private ChartPanel chart;

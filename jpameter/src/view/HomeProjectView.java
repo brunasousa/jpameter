@@ -1,35 +1,21 @@
 package view;
 
-import icons.IconUtils;
-
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
-import jpa.compiler.Compiler;
+import icons.IconUtils;
 
 /**
  *  * @author Dêmora Bruna
@@ -137,10 +123,6 @@ public class HomeProjectView extends JFrame {
 		events();
 		setVisible(true);
 		System.gc();
-	}
-	
-	public static void main(String args[]){
-		new HomeProjectView().execute();
 	}
 	
 }

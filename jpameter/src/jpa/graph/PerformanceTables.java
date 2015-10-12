@@ -32,7 +32,8 @@ public class PerformanceTables{
 			jt.setModel(dtm);
 			
 			for (QueryFile qf : map.getValue()) {
-				dtm.addRow(new String[]{QueryType.getNameByType(qf.getQueryType()),String.valueOf(qf.getTotalTime()),String.valueOf(qf.getRowsAfeccted())});
+				if(qf.getTotalTime() != 0 && qf.getRowsAfeccted() !=0)
+					dtm.addRow(new String[]{QueryType.getNameByType(qf.getQueryType()),String.valueOf(qf.getTotalTime()),String.valueOf(qf.getRowsAfeccted())});
 			}
 			
 			configureTable(jcp, jt);

@@ -1,13 +1,11 @@
 package view;
 
-import icons.IconUtils;
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -20,7 +18,10 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class FileSelectGUI extends JFrame{
+import icons.IconUtils;
+import jpa.results.Results;
+
+public class FileSelectGUI extends JFrame implements PropertyChangeListener{
 
 	private JPanel panelSelectFile;
 	private static JFileChooser fc;
@@ -33,6 +34,7 @@ public class FileSelectGUI extends JFrame{
 	private static JTextField jtfFile3;
 	private JButton btChart;
 	private static File[] files = new File[3];
+	private Results results;
 
 	public FileSelectGUI() {
 		build();
@@ -124,8 +126,8 @@ public class FileSelectGUI extends JFrame{
 					JOptionPane.showMessageDialog(null, "Please, choose one file to continue.");
 				}else{
 					getRef().dispose();
-					JPAMeterView jmv = new JPAMeterView(files);
-					jmv.execute();
+					results = new Results(getRef(), files);
+					results.execute();
 				}
 			}
 		});
@@ -169,6 +171,12 @@ public class FileSelectGUI extends JFrame{
 	public static void main(String[] args) {
 		new FileSelectGUI();
 
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
