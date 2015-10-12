@@ -32,6 +32,10 @@ public class ProgressBar{
 		if(progress > 0  && progress <=100)
 			progressMonitor.setProgress(progress);
 	}
+	
+	public boolean isCanceled(){
+		return progressMonitor.isCanceled();
+	}
 
 	
 }

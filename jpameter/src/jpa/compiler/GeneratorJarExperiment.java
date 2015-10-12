@@ -81,7 +81,6 @@ public class GeneratorJarExperiment extends SwingWorker<Void, Void>{
 					+ CompilerConstants.DEFAULT_FOLDER);
 			
 			windowBase.dispose();
-			new HomeProjectView().execute();
 		
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
@@ -97,7 +96,7 @@ public class GeneratorJarExperiment extends SwingWorker<Void, Void>{
     @Override
     public void done() {
         Toolkit.getDefaultToolkit().beep();
-        windowBase.setEnabled(true);
+        new HomeProjectView().execute();
     }
 	
 

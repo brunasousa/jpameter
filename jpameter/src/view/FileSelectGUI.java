@@ -125,7 +125,7 @@ public class FileSelectGUI extends JFrame implements PropertyChangeListener{
 				if(files[0] == null && files[1]==null && files[2]==null){
 					JOptionPane.showMessageDialog(null, "Please, choose one file to continue.");
 				}else{
-					getRef().dispose();
+					getRef().setEnabled(false);
 					results = new Results(getRef(), files);
 					results.execute();
 				}
@@ -175,8 +175,11 @@ public class FileSelectGUI extends JFrame implements PropertyChangeListener{
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
-		
+		 if(results.isProgressCanceled() || results.isCancelled()){
+			 results.cancel(true);
+			 getRef().dispose();
+			 new HomeProjectView().execute();
+		 }
 	}
 
 }
